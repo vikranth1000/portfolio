@@ -2,11 +2,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const SEQUENCE = [
-  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
-  'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
-  'b', 'a',
-]
+const SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown']
 
 function PacMan() {
   const [open, setOpen] = useState(true)

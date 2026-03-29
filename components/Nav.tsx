@@ -46,7 +46,7 @@ export default function Nav() {
           {/* Monogram */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-sm font-semibold text-text-primary hover:text-text-secondary transition-colors"
+            className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors"
           >
             VR
           </button>
@@ -57,7 +57,7 @@ export default function Nav() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className="relative text-xs text-text-secondary hover:text-text-primary transition-colors group"
+                className="relative text-sm text-text-secondary hover:text-text-primary transition-colors group"
               >
                 {link.label}
                 <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-text-primary transition-all duration-300 group-hover:w-full" />

@@ -7,6 +7,7 @@ const PROMPT = 'vikranth@portfolio:~$'
 type Line =
   | { kind: 'input'; text: string }
   | { kind: 'output'; text: string }
+  | { kind: 'cmd'; name: string; description: string }
   | { kind: 'error'; text: string }
 
 function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
@@ -16,16 +17,16 @@ function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
     case 'help':
       return {
         lines: [
-          'Commands:',
-          '  ls              list projects',
-          '  cat about.txt   about me',
-          '  whoami          quick intro',
-          '  clear           clear terminal',
-          '  exit            close',
-          '',
-          'Secrets:',
-          '  ↑↑↓↓←→←→BA     ???',
-        ].map(text => ({ kind: 'output', text })),
+          { kind: 'output', text: 'Commands:' },
+          { kind: 'cmd', name: 'ls', description: 'list projects' },
+          { kind: 'cmd', name: 'cat about.txt', description: 'about me' },
+          { kind: 'cmd', name: 'whoami', description: 'quick intro' },
+          { kind: 'cmd', name: 'clear', description: 'clear terminal' },
+          { kind: 'cmd', name: 'exit', description: 'close' },
+          { kind: 'output', text: '' },
+          { kind: 'output', text: 'Secrets:' },
+          { kind: 'cmd', name: '↑↑↓↓', description: '???' },
+        ] as Line[],
       }
 
     case 'ls':
@@ -209,6 +210,11 @@ export default function CommandPalette() {
                       <p>
                         <span className="text-[#22c55e]">{PROMPT}</span>
                         <span className="text-white ml-2">{line.text}</span>
+                      </p>
+                    ) : line.kind === 'cmd' ? (
+                      <p className="flex gap-4">
+                        <span className="text-white w-36 shrink-0">{line.name}</span>
+                        <span className="text-[#444]">{line.description}</span>
                       </p>
                     ) : line.kind === 'error' ? (
                       <p className="text-[#ff5f57]">{line.text}</p>
