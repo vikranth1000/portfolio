@@ -6,6 +6,7 @@ import CustomCursor from '@/components/CustomCursor'
 import ConsoleMessage from '@/components/ConsoleMessage'
 import KonamiCode from '@/components/KonamiCode'
 import CommandPalette from '@/components/CommandPalette'
+import KeyboardHint from '@/components/KeyboardHint'
 
 export const metadata: Metadata = {
   title: 'Vikranth Reddimasu — ML Engineer',
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ConsoleMessage />
         <KonamiCode />
         <CommandPalette />
+        <KeyboardHint />
         {children}
       </body>
     </html>

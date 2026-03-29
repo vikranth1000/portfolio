@@ -22,6 +22,9 @@ function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
           '  whoami          quick intro',
           '  clear           clear terminal',
           '  exit            close',
+          '',
+          'Secrets:',
+          '  ↑↑↓↓←→←→BA     ???',
         ].map(text => ({ kind: 'output', text })),
       }
 
@@ -101,9 +104,15 @@ export default function CommandPalette() {
     return () => window.removeEventListener('keydown', handler)
   }, [open])
 
-  // Focus input when opened
+  // Focus input when opened; mark as discovered so the hint hides
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 50)
+    if (open) {
+      setTimeout(() => inputRef.current?.focus(), 50)
+      if (!sessionStorage.getItem('palette_opened')) {
+        sessionStorage.setItem('palette_opened', '1')
+        window.dispatchEvent(new Event('palette_opened'))
+      }
+    }
   }, [open])
 
   // Scroll to bottom on new output

@@ -21,6 +21,10 @@ export default function ConsoleMessage() {
     console.log('%c ', s('#090909'))
     console.log('%c  → vikranthreddimasu@gmail.com', s('#555555'))
     console.log('%c ', s('#090909'))
+    console.log('%c  Hints:', s('#333333'))
+    console.log('%c  Press [ / ] to open the terminal', s('#333333'))
+    console.log('%c  You know the konami code...', s('#333333'))
+    console.log('%c ', s('#090909'))
   }, [])
 
   return null
