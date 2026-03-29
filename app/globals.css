@@ -2,26 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #090909;
+  color: #ffffff;
+  cursor: none;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Show default cursor on touch devices */
+@media (hover: none) {
+  body {
+    cursor: auto;
+  }
+}
+
+/* Custom cursor dot */
+.cursor-dot {
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s ease, height 0.15s ease, opacity 0.15s ease;
+  will-change: left, top;
+}
+
+.cursor-dot.hovered {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+}
+
+/* Disable all animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
