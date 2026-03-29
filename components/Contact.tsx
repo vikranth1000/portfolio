@@ -43,7 +43,7 @@ export default function Contact() {
     <section id="contact" className="py-24 max-w-5xl mx-auto px-6">
       <AnimateOnScroll>
         <h2 className="text-3xl font-semibold text-text-primary mb-4">Contact</h2>
-        <p className="text-text-secondary text-sm mb-12 max-w-md leading-relaxed">
+        <p className="text-text-secondary text-base mb-12 max-w-md leading-relaxed">
           Open to full-time ML Engineer, Data Scientist, and AI Engineer roles. I respond to every message.
         </p>
       </AnimateOnScroll>
@@ -58,10 +58,10 @@ export default function Contact() {
               download={link.download ? true : undefined}
               className="group flex items-center justify-between border-b border-border-subtle py-4 hover:border-border-hover transition-colors"
             >
-              <span className="text-xs text-text-muted uppercase tracking-widest">
+              <span className="text-sm text-[#444] uppercase tracking-widest">
                 {link.label}
               </span>
-              <span className="text-sm text-text-secondary group-hover:text-text-primary group-hover:translate-x-1 transition-all duration-200">
+              <span className="text-base text-text-secondary group-hover:text-text-primary group-hover:translate-x-1 transition-all duration-200">
                 {link.display}
               </span>
             </a>

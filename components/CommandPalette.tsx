@@ -104,14 +104,13 @@ export default function CommandPalette() {
     return () => window.removeEventListener('keydown', handler)
   }, [open])
 
-  // Focus input when opened; mark as discovered so the hint hides
+  // Focus input when opened; sync hint visibility
   useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 50)
-      if (!sessionStorage.getItem('palette_opened')) {
-        sessionStorage.setItem('palette_opened', '1')
-        window.dispatchEvent(new Event('palette_opened'))
-      }
+      window.dispatchEvent(new Event('palette_opened'))
+    } else {
+      window.dispatchEvent(new Event('palette_closed'))
     }
   }, [open])
 
