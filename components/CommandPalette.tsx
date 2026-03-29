@@ -25,7 +25,7 @@ function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
           { kind: 'cmd', name: 'exit', description: 'close' },
           { kind: 'output', text: '' },
           { kind: 'output', text: 'Secrets:' },
-          { kind: 'cmd', name: '↑↑↓↓', description: '???' },
+          { kind: 'cmd', name: '←→←→', description: '???' },
         ] as Line[],
       }
 

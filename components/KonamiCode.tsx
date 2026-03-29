@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown']
+const SEQUENCE = ['ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight']
 
 function PacMan() {
   const [open, setOpen] = useState(true)
@@ -38,6 +38,7 @@ export default function KonamiCode() {
     const handleKey = (e: KeyboardEvent) => {
       const expected = SEQUENCE[progress]
       if (e.key === expected) {
+        e.preventDefault()
         const next = progress + 1
         if (next === SEQUENCE.length) {
           setActive(true)
@@ -65,7 +66,7 @@ export default function KonamiCode() {
           transition={{ duration: 3, ease: 'linear' }}
           aria-hidden="true"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <PacMan />
             {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
               <motion.div
@@ -73,7 +74,7 @@ export default function KonamiCode() {
                 className="w-2 h-2 rounded-full bg-[#FACC15]"
                 initial={{ opacity: 1, scale: 1 }}
                 animate={{ opacity: 0, scale: 0 }}
-                transition={{ delay: i * 0.35, duration: 0.15 }}
+                transition={{ delay: 0.25 + i * 0.22, duration: 0.12 }}
               />
             ))}
           </div>
