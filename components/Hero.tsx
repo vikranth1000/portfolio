@@ -53,7 +53,7 @@ export default function Hero() {
         <motion.div variants={item} className="flex items-center gap-3 flex-wrap">
           <button
             onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-text-primary text-base px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-white/90 transition-colors"
+            className="bg-text-primary text-[#090909] px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-white/90 transition-colors"
           >
             View Work
           </button>

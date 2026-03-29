@@ -17,6 +17,7 @@ const config: Config = {
         'text-secondary': '#555555',
         'text-muted': '#333333',
         'accent-green': '#22c55e',
+        tag: '#111111',
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)'],

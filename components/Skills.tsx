@@ -40,7 +40,7 @@ export default function Skills() {
                 {group.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="text-xs px-2 py-1 rounded bg-[#111] border border-border-subtle text-text-secondary"
+                    className="text-xs px-2 py-1 rounded bg-tag border border-border-subtle text-text-secondary"
                   >
                     {skill}
                   </span>
