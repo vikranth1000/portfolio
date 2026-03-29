@@ -44,7 +44,7 @@ export default function Hero() {
         {/* Tagline */}
         <motion.p
           variants={item}
-          className="text-text-secondary text-base md:text-lg max-w-md leading-relaxed"
+          className="text-text-secondary text-lg md:text-xl max-w-md leading-relaxed"
         >
           ML Engineer building AI systems that scale.
         </motion.p>

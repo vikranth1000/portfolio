@@ -33,14 +33,14 @@ export default function Skills() {
         {SKILL_GROUPS.map((group, i) => (
           <AnimateOnScroll key={group.label} delay={i * 0.06}>
             <div>
-              <p className="text-xs text-text-muted uppercase tracking-widest mb-3">
+              <p className="text-sm text-[#444] uppercase tracking-widest mb-3">
                 {group.label}
               </p>
               <div className="flex flex-wrap gap-2">
                 {group.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="text-xs px-2 py-1 rounded bg-tag border border-border-subtle text-text-secondary"
+                    className="text-sm px-3 py-1.5 rounded bg-tag border border-border-subtle text-text-secondary"
                   >
                     {skill}
                   </span>
