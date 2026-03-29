@@ -1,8 +1,10 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const SEQUENCE = ['ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight']
+const DOT_COUNT = 8
+const DURATION = 3 // seconds for Pac-Man to cross the screen
 
 function PacMan() {
   const [open, setOpen] = useState(true)
@@ -11,9 +13,7 @@ function PacMan() {
     return () => clearInterval(id)
   }, [])
 
-  const r = 20
-  const cx = 24
-  const cy = 24
+  const r = 20, cx = 24, cy = 24
   const angle = open ? 30 : 5
   const rad = (angle * Math.PI) / 180
   const tx = cx + r * Math.cos(rad)
@@ -31,8 +31,11 @@ function PacMan() {
 }
 
 export default function KonamiCode() {
-  const [progress, setProgress] = useState(0)
   const [active, setActive] = useState(false)
+  const [runId, setRunId] = useState(0)
+  const [dotDelays, setDotDelays] = useState<number[]>([])
+  const [progress, setProgress] = useState(0)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -41,9 +44,25 @@ export default function KonamiCode() {
         e.preventDefault()
         const next = progress + 1
         if (next === SEQUENCE.length) {
-          setActive(true)
           setProgress(0)
-          setTimeout(() => setActive(false), 3500)
+
+          // Calculate when Pac-Man's mouth reaches each dot's fixed screen position.
+          // Pac-Man starts at left:-60px, mouth is at x = -60 + 48 = -12px.
+          // It travels (vw + 120)px over DURATION seconds.
+          // Dot i is fixed at (i+1)*10vw from the left.
+          const vw = window.innerWidth
+          const totalDist = vw + 120
+          const delays = Array.from({ length: DOT_COUNT }, (_, i) => {
+            const dotX = vw * 0.1 * (i + 1)
+            return ((dotX + 12) * DURATION) / totalDist
+          })
+          setDotDelays(delays)
+
+          // Cancel previous timeout and force a fresh animation via runId key
+          if (timeoutRef.current) clearTimeout(timeoutRef.current)
+          setRunId(id => id + 1)
+          setActive(true)
+          timeoutRef.current = setTimeout(() => setActive(false), (DURATION + 0.6) * 1000)
         } else {
           setProgress(next)
         }
@@ -56,30 +75,44 @@ export default function KonamiCode() {
   }, [progress])
 
   return (
-    <AnimatePresence>
-      {active && (
-        <motion.div
-          className="fixed z-[9998] pointer-events-none"
-          style={{ top: '48%', left: -60 }}
-          initial={{ x: 0 }}
-          animate={{ x: 'calc(100vw + 120px)' }}
-          transition={{ duration: 3, ease: 'linear' }}
-          aria-hidden="true"
-        >
-          <div className="flex items-center gap-4">
+    <>
+      {/* Dots: fixed on screen — Pac-Man travels through them */}
+      <AnimatePresence>
+        {active && dotDelays.map((delay, i) => (
+          <motion.div
+            key={`dot-${runId}-${i}`}
+            className="fixed z-[9997] pointer-events-none w-2 h-2 rounded-full bg-[#FACC15]"
+            style={{
+              left: `${(i + 1) * 10}vw`,
+              top: '48%',
+              translate: '-50% -50%',
+            }}
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 0, scale: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay, duration: 0.12 }}
+            aria-hidden="true"
+          />
+        ))}
+      </AnimatePresence>
+
+      {/* Pac-Man: moves independently across the screen */}
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            key={`pacman-${runId}`}
+            className="fixed z-[9998] pointer-events-none"
+            style={{ top: 'calc(48% - 24px)', left: -60 }}
+            initial={{ x: 0 }}
+            animate={{ x: 'calc(100vw + 120px)' }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            transition={{ duration: DURATION, ease: 'linear' }}
+            aria-hidden="true"
+          >
             <PacMan />
-            {[0, 1, 2, 3, 4, 5, 6, 7].map(i => (
-              <motion.div
-                key={i}
-                className="w-2 h-2 rounded-full bg-[#FACC15]"
-                initial={{ opacity: 1, scale: 1 }}
-                animate={{ opacity: 0, scale: 0 }}
-                transition={{ delay: 0.25 + i * 0.22, duration: 0.12 }}
-              />
-            ))}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
