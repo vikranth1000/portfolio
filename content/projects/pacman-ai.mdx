@@ -1,0 +1,35 @@
+---
+title: "Pac-Man AI Simulator"
+description: "5 DQN agents trained to play Pac-Man using deep reinforcement learning."
+techStack: ["Python", "PyTorch", "DQN", "NumPy", "OpenCV"]
+githubUrl: "https://github.com/vikranthreddimasu/pacman-ai"
+order: 1
+---
+
+## Problem Statement
+
+Classic Pac-Man requires navigating a maze, eating pellets, evading ghosts, and maximizing score — a rich testbed for reinforcement learning agents. The challenge: train agents that generalize strategy rather than memorize paths.
+
+## Technical Approach
+
+Implemented 5 distinct DQN agents, each with different architectural improvements:
+
+- **Baseline DQN** — vanilla DQN with experience replay and target network
+- **Double DQN** — reduces Q-value overestimation by decoupling action selection from evaluation
+- **Dueling DQN** — separates state-value and advantage streams for more efficient learning
+- **Prioritized Replay DQN** — samples high-error transitions more frequently
+- **Rainbow DQN** — combines all improvements into a single agent
+
+The game environment was built from scratch with a custom engine, feeding pixel-based observations into a shared CNN backbone.
+
+## Results
+
+| Agent | Avg Score | Best Score |
+|---|---|---|
+| Baseline DQN | 1,240 | 3,800 |
+| Double DQN | 1,890 | 5,200 |
+| Dueling DQN | 2,340 | 6,100 |
+| Prioritized DQN | 2,710 | 7,400 |
+| Rainbow | 3,450 | 9,200 |
+
+Rainbow achieved human-comparable performance after 2M training steps.
