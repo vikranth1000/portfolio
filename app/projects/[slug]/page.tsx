@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { getProjectBySlug, getAllProjectSlugs } from '@/lib/projects'
 import ProjectLayout from '@/components/ProjectLayout'
+import PageTransition from '@/components/PageTransition'
 import type { Metadata } from 'next'
 
 interface Props {
@@ -26,8 +27,10 @@ export default function ProjectPage({ params }: Props) {
   if (!project) notFound()
 
   return (
-    <ProjectLayout meta={project}>
-      <MDXRemote source={project.content} />
-    </ProjectLayout>
+    <PageTransition>
+      <ProjectLayout meta={project}>
+        <MDXRemote source={project.content} />
+      </ProjectLayout>
+    </PageTransition>
   )
 }
