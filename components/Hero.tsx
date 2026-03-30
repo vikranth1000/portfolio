@@ -71,6 +71,23 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Clifford attractor annotation — dim always, expands on hover */}
+      <div className="absolute bottom-8 right-8 z-10 text-right group cursor-default select-none">
+        <p className="text-[11px] font-mono tracking-wider text-white/15 group-hover:text-white/50 transition-colors duration-300">
+          Clifford Attractor
+        </p>
+        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500">
+          <div className="overflow-hidden">
+            <div className="pt-2 text-[10px] font-mono leading-relaxed space-y-0.5">
+              <p className="text-white/35">x = sin(Ay) + C·cos(Ax)</p>
+              <p className="text-white/35">y = sin(Bx) + D·cos(By)</p>
+              <p className="pt-1 text-white/20">A=−1.4  B=1.6  C=1.0  D=0.7</p>
+              <p className="text-white/20">160,000 iterations</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }
