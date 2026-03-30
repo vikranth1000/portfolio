@@ -13,6 +13,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [vrCopied, setVrCopied] = useState(false)
+  const [vrOffset, setVrOffset] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -35,6 +36,9 @@ export default function Nav() {
   }
 
   const copyLink = () => {
+    const angle = Math.random() * 2 * Math.PI
+    const dist = 26 + Math.random() * 16
+    setVrOffset({ x: Math.round(Math.cos(angle) * dist), y: Math.round(Math.sin(angle) * dist) })
     navigator.clipboard.writeText('https://vikranthreddimasu.xyz')
     setVrCopied(true)
     setTimeout(() => setVrCopied(false), 2000)
@@ -78,19 +82,22 @@ export default function Nav() {
             >
               VR
             </button>
-            <AnimatePresence>
-              {vrCopied && (
-                <motion.span
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 4 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-accent-green whitespace-nowrap pointer-events-none"
-                >
-                  Copied!
-                </motion.span>
-              )}
-            </AnimatePresence>
+            {/* Toast floats outward in a random direction each click */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible">
+              <AnimatePresence>
+                {vrCopied && (
+                  <motion.span
+                    initial={{ opacity: 0, x: 0, y: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, x: vrOffset.x, y: vrOffset.y, scale: 1 }}
+                    exit={{ opacity: 0, x: vrOffset.x, y: vrOffset.y }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                    className="absolute text-xs text-accent-green whitespace-nowrap"
+                  >
+                    Copied!
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Desktop nav */}
