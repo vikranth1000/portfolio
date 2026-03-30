@@ -9,6 +9,7 @@ import CommandPalette from '@/components/CommandPalette'
 import KeyboardHint from '@/components/KeyboardHint'
 import ScrollProgress from '@/components/ScrollProgress'
 import AskMeAnything from '@/components/AskMeAnything'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   title: 'Vikranth Reddimasu — ML Engineer',
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <KeyboardHint />
         <AskMeAnything />
         {children}
+        <Analytics />
       </body>
     </html>
   )
