@@ -8,7 +8,7 @@ import KonamiCode from '@/components/KonamiCode'
 import CommandPalette from '@/components/CommandPalette'
 import KeyboardHint from '@/components/KeyboardHint'
 import ScrollProgress from '@/components/ScrollProgress'
-import SideCharacter from '@/components/SideCharacter'
+import AskMeAnything from '@/components/AskMeAnything'
 
 export const metadata: Metadata = {
   title: 'Vikranth Reddimasu — ML Engineer',
@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <KonamiCode />
         <CommandPalette />
         <KeyboardHint />
-        <SideCharacter />
+        <AskMeAnything />
         {children}
       </body>
     </html>
