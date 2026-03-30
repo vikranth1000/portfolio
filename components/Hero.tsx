@@ -91,12 +91,12 @@ export default function Hero() {
           <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4">
             <p className="text-sm font-semibold text-white/80 mb-2">Clifford Strange Attractor</p>
             <p className="text-xs text-white/50 leading-relaxed mb-3">
-              A chaotic dynamical system — parameters shift slowly over time, paths form and dissolve as the shape breathes and morphs. It never repeats.
+              A chaotic dynamical system with fixed parameters — the attractor endlessly retraces the same bounded shape, creating a glowing shimmer as paths fade and are continuously relit.
             </p>
             <div className="border-t border-white/5 pt-3 font-mono text-xs text-white/30 space-y-0.5">
               <p>x = sin(a·y) + c·cos(a·x)</p>
               <p>y = sin(b·x) + d·cos(b·y)</p>
-              <p className="pt-1 text-white/20">a, b, c, d shift slowly over time</p>
+              <p className="pt-1 text-white/20">a=-1.4  b=1.6  c=1.0  d=0.7</p>
             </div>
           </div>
         </div>

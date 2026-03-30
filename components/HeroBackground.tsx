@@ -7,8 +7,8 @@ const A = -1.4, B = 1.6, C = 1.0, D = 0.7
 const WARMUP        = 2000   // steps before we start drawing (gets us onto the attractor)
 const SAMPLE_STEPS  = 10000  // steps used to measure the attractor's bounding box
 const BATCH        = 6000   // pts per frame — dense paths stay bright at steady state
-const FADE_ALPHA   = 0.015  // per-frame fade — paths decay over ~4s, sparse paths sparkle
-const POINT_OPACITY = 0.04
+const FADE_ALPHA   = 0.030  // per-frame fade — faster clearing prevents accumulation
+const POINT_OPACITY = 0.10  // brighter individual dots; ratio POINT_OPACITY/FADE_ALPHA sets equilibrium brightness
 
 function step(x: number, y: number) {
   return {

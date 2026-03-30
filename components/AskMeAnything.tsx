@@ -7,40 +7,32 @@ type Message = { role: 'user' | 'assistant'; content: string }
 function MascotIcon() {
   return (
     <motion.svg
-      width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
-      animate={{ y: [0, -2, 0] }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+      width="26" height="26" viewBox="0 0 26 26"
+      fill="none" stroke="currentColor" strokeLinecap="round"
+      animate={{ y: [0, -3, 0] }}
+      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
     >
-      {/* antenna stem */}
-      <line x1="11" y1="5" x2="11" y2="2.2" strokeWidth="1.3" strokeLinecap="round" />
-      {/* antenna tip — pulses */}
-      <motion.circle
-        cx="11" cy="1.4" r="1.1"
-        fill="currentColor" stroke="none"
-        animate={{ scale: [1, 1.6, 1], opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+      {/* V-arms */}
+      <line x1="4" y1="4" x2="13" y2="22" strokeWidth="1.5" />
+      <line x1="22" y1="4" x2="13" y2="22" strokeWidth="1.5" />
+      {/* Top-left node — pulses first */}
+      <motion.circle cx="4" cy="4" r="2.5" fill="currentColor" stroke="none"
+        animate={{ scale: [1, 1.7, 1] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0 }}
         style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
       />
-      {/* head */}
-      <rect x="3" y="5" width="16" height="13" rx="3.5" strokeWidth="1.3" />
-      {/* left eye — blinks */}
-      <motion.circle
-        cx="8" cy="10.5" r="1.5"
-        fill="currentColor" stroke="none"
-        animate={{ scaleY: [1, 1, 0.08, 1] }}
-        transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.5, times: [0, 0.75, 0.8, 0.85] }}
+      {/* Bottom apex — pulses second */}
+      <motion.circle cx="13" cy="22" r="3" fill="currentColor" stroke="none"
+        animate={{ scale: [1, 1.6, 1] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
         style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
       />
-      {/* right eye — blinks in sync */}
-      <motion.circle
-        cx="14" cy="10.5" r="1.5"
-        fill="currentColor" stroke="none"
-        animate={{ scaleY: [1, 1, 0.08, 1] }}
-        transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.5, times: [0, 0.75, 0.8, 0.85] }}
+      {/* Top-right node — pulses third */}
+      <motion.circle cx="22" cy="4" r="2.5" fill="currentColor" stroke="none"
+        animate={{ scale: [1, 1.7, 1] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.6 }}
         style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
       />
-      {/* smile */}
-      <path d="M7.5 14 Q11 16.5 14.5 14" strokeWidth="1.3" strokeLinecap="round" fill="none" />
     </motion.svg>
   )
 }

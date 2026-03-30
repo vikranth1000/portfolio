@@ -22,15 +22,12 @@ export default function HomePage() {
             <p className="text-xs text-text-muted">
               © {new Date().getFullYear()} Vikranth Reddimasu
             </p>
-            <a
-              href="/llms.txt"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Structured profile for AI assistants and LLMs"
-              className="text-xs font-mono text-text-muted hover:text-text-secondary transition-colors"
+            <span
+              title="AI agents find /llms.txt automatically at the site root"
+              className="text-xs font-mono text-text-muted cursor-default select-none"
             >
-              AI-readable ↗
-            </a>
+              AI-readable
+            </span>
           </div>
         </footer>
       </main>
