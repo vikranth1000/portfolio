@@ -4,6 +4,47 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 
 type Message = { role: 'user' | 'assistant'; content: string }
 
+function MascotIcon() {
+  return (
+    <motion.svg
+      width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor"
+      animate={{ y: [0, -2, 0] }}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      {/* antenna stem */}
+      <line x1="11" y1="5" x2="11" y2="2.2" strokeWidth="1.3" strokeLinecap="round" />
+      {/* antenna tip — pulses */}
+      <motion.circle
+        cx="11" cy="1.4" r="1.1"
+        fill="currentColor" stroke="none"
+        animate={{ scale: [1, 1.6, 1], opacity: [0.7, 1, 0.7] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+      />
+      {/* head */}
+      <rect x="3" y="5" width="16" height="13" rx="3.5" strokeWidth="1.3" />
+      {/* left eye — blinks */}
+      <motion.circle
+        cx="8" cy="10.5" r="1.5"
+        fill="currentColor" stroke="none"
+        animate={{ scaleY: [1, 1, 0.08, 1] }}
+        transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.5, times: [0, 0.75, 0.8, 0.85] }}
+        style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+      />
+      {/* right eye — blinks in sync */}
+      <motion.circle
+        cx="14" cy="10.5" r="1.5"
+        fill="currentColor" stroke="none"
+        animate={{ scaleY: [1, 1, 0.08, 1] }}
+        transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.5, times: [0, 0.75, 0.8, 0.85] }}
+        style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+      />
+      {/* smile */}
+      <path d="M7.5 14 Q11 16.5 14.5 14" strokeWidth="1.3" strokeLinecap="round" fill="none" />
+    </motion.svg>
+  )
+}
+
 const WELCOME: Message = {
   role: 'assistant',
   content: "Hey! I'm an AI trained on Vikranth's background. Ask me about his projects, skills, or experience.",
@@ -190,20 +231,11 @@ export default function AskMeAnything() {
               <path d="M1 1l10 10M11 1L1 11"/>
             </motion.svg>
           ) : (
-            /* Robot mascot — Notion-style simple character */
-            <motion.svg key="mascot" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
-              initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }} transition={{ duration: 0.15 }}>
-              {/* antenna */}
-              <line x1="10" y1="4.5" x2="10" y2="2" strokeWidth="1.3" strokeLinecap="round"/>
-              <circle cx="10" cy="1.3" r="1" fill="currentColor" stroke="none"/>
-              {/* head */}
-              <rect x="2.5" y="4.5" width="15" height="12" rx="3" strokeWidth="1.3"/>
-              {/* eyes */}
-              <circle cx="7.5" cy="9.5" r="1.4" fill="currentColor" stroke="none"/>
-              <circle cx="12.5" cy="9.5" r="1.4" fill="currentColor" stroke="none"/>
-              {/* smile */}
-              <path d="M7 13 Q10 15 13 13" strokeWidth="1.3" strokeLinecap="round" fill="none"/>
-            </motion.svg>
+            <motion.div key="mascot"
+              initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }}
+              transition={{ duration: 0.15 }}>
+              <MascotIcon />
+            </motion.div>
           )}
         </AnimatePresence>
       </button>
