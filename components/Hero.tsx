@@ -81,12 +81,12 @@ export default function Hero() {
           <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4">
             <p className="text-sm font-semibold text-white/80 mb-2">Clifford Strange Attractor</p>
             <p className="text-xs text-white/50 leading-relaxed mb-3">
-              A chaotic dynamical system — two simple equations, iterated 160,000 times, producing a pattern that never exactly repeats.
+              A chaotic dynamical system — parameters shift slowly over time, paths form and dissolve as the shape breathes and morphs. It never repeats.
             </p>
             <div className="border-t border-white/5 pt-3 font-mono text-xs text-white/30 space-y-0.5">
-              <p>x = sin(Ay) + C·cos(Ax)</p>
-              <p>y = sin(Bx) + D·cos(By)</p>
-              <p className="pt-1 text-white/20">A=−1.4  B=1.6  C=1.0  D=0.7</p>
+              <p>x = sin(a·y) + c·cos(a·x)</p>
+              <p>y = sin(b·x) + d·cos(b·y)</p>
+              <p className="pt-1 text-white/20">a, b, c, d shift slowly over time</p>
             </div>
           </div>
         </div>

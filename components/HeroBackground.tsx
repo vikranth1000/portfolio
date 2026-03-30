@@ -6,18 +6,17 @@ const A = -1.4, B = 1.6, C = 1.0, D = 0.7
 
 const WARMUP        = 2000   // steps before we start drawing (gets us onto the attractor)
 const SAMPLE_STEPS  = 10000  // steps used to measure the attractor's bounding box
-const BATCH_REVEAL  = 8000   // points per frame during reveal — full form emerges in ~330ms
-const BATCH_IDLE    = 2000   // points per frame in idle — enough to see the flow clearly
-const REVEAL_COUNT  = 160000 // total points in the reveal phase
-const POINT_OPACITY = 0.025  // low enough that density creates the gradation naturally
-const FADE_ALPHA    = 0.012  // per-frame fade — dense paths glow, sparse paths flicker out over ~5s
+const BATCH        = 6000   // pts per frame — dense paths stay bright at steady state
+const FADE_ALPHA   = 0.015  // per-frame fade — paths decay over ~4s, sparse paths sparkle
+const POINT_OPACITY = 0.025
 
-// Idle phase: slowly oscillate parameters so the shape morphs and breathes
-// Amplitudes ~10–15% of base; non-commensurate periods so it never exactly repeats
-const A_AMP = 0.15, A_FREQ = 0.007  // base A = −1.4, cycle ≈ 15s
-const B_AMP = 0.12, B_FREQ = 0.005  // base B =  1.6, cycle ≈ 21s
-const C_AMP = 0.10, C_FREQ = 0.003  // base C =  1.0, cycle ≈ 35s
-const D_AMP = 0.08, D_FREQ = 0.004  // base D =  0.7, cycle ≈ 26s
+// Slowly oscillate parameters — shape breathes without changing topology
+// Small amplitudes (~5%) keep the overall form recognisable; non-commensurate
+// periods mean the combination never exactly repeats
+const A_AMP = 0.07, A_FREQ = 0.007  // base A = −1.4, cycle ≈ 15s
+const B_AMP = 0.06, B_FREQ = 0.005  // base B =  1.6, cycle ≈ 21s
+const C_AMP = 0.05, C_FREQ = 0.003  // base C =  1.0, cycle ≈ 35s
+const D_AMP = 0.04, D_FREQ = 0.004  // base D =  0.7, cycle ≈ 26s
 
 function step(x: number, y: number) {
   return {
@@ -73,39 +72,32 @@ export default function HeroBackground() {
       const cx = w * 0.65 - ((minX + maxX) / 2) * scale
       const cy = h * 0.50 - ((minY + maxY) / 2) * scale
 
-      let drawn = 0
+      // Single continuous loop — form builds naturally to steady state in ~3s,
+      // then morphs indefinitely. No separate reveal phase to avoid the grey-blob
+      // problem caused by dense accumulated points fading through grey.
       let frame = 0
       state.active = true
 
       function draw() {
         if (!state.active) return
 
-        if (drawn < REVEAL_COUNT) {
-          // Reveal phase: accumulate with fixed params — shape snaps in fast and clean
-          ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
-          for (let i = 0; i < BATCH_REVEAL; i++) {
-            ;({ x, y } = step(x, y))
-            ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
-          }
-          drawn += BATCH_REVEAL
-        } else {
-          // Idle phase: morph parameters each frame + fade trail
-          // The attractor shape drifts slowly → paths form, shift, and dissolve
-          frame++
-          const a = A + A_AMP * Math.sin(frame * A_FREQ)
-          const b = B + B_AMP * Math.sin(frame * B_FREQ + 1.2)
-          const c = C + C_AMP * Math.sin(frame * C_FREQ + 2.4)
-          const d = D + D_AMP * Math.sin(frame * D_FREQ + 3.6)
+        frame++
+        const a = A + A_AMP * Math.sin(frame * A_FREQ)
+        const b = B + B_AMP * Math.sin(frame * B_FREQ + 1.2)
+        const c = C + C_AMP * Math.sin(frame * C_FREQ + 2.4)
+        const d = D + D_AMP * Math.sin(frame * D_FREQ + 3.6)
 
-          ctx.fillStyle = `rgba(9,9,9,${FADE_ALPHA})`
-          ctx.fillRect(0, 0, w, h)
-          ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
-          for (let i = 0; i < BATCH_IDLE; i++) {
-            const nx = Math.sin(a * y) + c * Math.cos(a * x)
-            const ny = Math.sin(b * x) + d * Math.cos(b * y)
-            x = nx; y = ny
-            ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
-          }
+        // Fade — pushes all pixels toward background; dense paths are replenished
+        // fast enough to stay bright, sparse paths flicker and dissolve
+        ctx.fillStyle = `rgba(9,9,9,${FADE_ALPHA})`
+        ctx.fillRect(0, 0, w, h)
+
+        ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
+        for (let i = 0; i < BATCH; i++) {
+          const nx = Math.sin(a * y) + c * Math.cos(a * x)
+          const ny = Math.sin(b * x) + d * Math.cos(b * y)
+          x = nx; y = ny
+          ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
         }
 
         state.raf = requestAnimationFrame(draw)
