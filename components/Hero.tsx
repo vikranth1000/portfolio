@@ -26,14 +26,27 @@ export default function Hero() {
           animate="visible"
           className="flex flex-col gap-6"
         >
-          {/* Availability badge */}
-          <motion.div variants={item}>
+          {/* Availability + AI-readable badges */}
+          <motion.div variants={item} className="flex items-center gap-2 flex-wrap">
             <span className="inline-flex items-center gap-2 bg-surface border border-border-subtle rounded-full px-3 py-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-green inline-block" />
               <span className="text-xs text-text-secondary tracking-widest uppercase">
                 Open to work
               </span>
             </span>
+            <a
+              href="/llms.txt"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Structured profile readable by AI assistants and LLMs"
+              className="inline-flex items-center gap-1.5 bg-surface border border-border-subtle rounded-full px-3 py-1.5 hover:border-border-hover transition-colors"
+            >
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="none" className="text-text-secondary" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+                <circle cx="5" cy="5" r="4"/>
+                <path d="M2.5 5h5M5 2.5v5"/>
+              </svg>
+              <span className="text-xs text-text-secondary tracking-widest uppercase">AI-readable</span>
+            </a>
           </motion.div>
 
           {/* Name */}

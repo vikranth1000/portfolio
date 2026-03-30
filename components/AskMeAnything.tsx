@@ -185,14 +185,24 @@ export default function AskMeAnything() {
       >
         <AnimatePresence mode="wait">
           {open ? (
-            <motion.svg key="x" width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"
+            <motion.svg key="x" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"
               initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }} transition={{ duration: 0.15 }}>
               <path d="M1 1l10 10M11 1L1 11"/>
             </motion.svg>
           ) : (
-            <motion.svg key="chat" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.2"
-              initial={{ opacity: 0, rotate: 90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: -90 }} transition={{ duration: 0.15 }}>
-              <path d="M1.5 2h12v9H9.5l-2.5 2-1-2H1.5V2z" strokeLinejoin="round"/>
+            /* Robot mascot — Notion-style simple character */
+            <motion.svg key="mascot" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+              initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }} transition={{ duration: 0.15 }}>
+              {/* antenna */}
+              <line x1="10" y1="4.5" x2="10" y2="2" strokeWidth="1.3" strokeLinecap="round"/>
+              <circle cx="10" cy="1.3" r="1" fill="currentColor" stroke="none"/>
+              {/* head */}
+              <rect x="2.5" y="4.5" width="15" height="12" rx="3" strokeWidth="1.3"/>
+              {/* eyes */}
+              <circle cx="7.5" cy="9.5" r="1.4" fill="currentColor" stroke="none"/>
+              <circle cx="12.5" cy="9.5" r="1.4" fill="currentColor" stroke="none"/>
+              {/* smile */}
+              <path d="M7 13 Q10 15 13 13" strokeWidth="1.3" strokeLinecap="round" fill="none"/>
             </motion.svg>
           )}
         </AnimatePresence>

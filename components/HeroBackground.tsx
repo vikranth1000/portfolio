@@ -6,9 +6,9 @@ const A = -1.4, B = 1.6, C = 1.0, D = 0.7
 
 const WARMUP        = 2000   // steps before we start drawing (gets us onto the attractor)
 const SAMPLE_STEPS  = 10000  // steps used to measure the attractor's bounding box
-const BATCH        = 400    // pts per frame — sparse comet-trail effect
-const FADE_ALPHA   = 0.08   // per-frame fade — clears within ~0.5s
-const POINT_OPACITY = 0.15
+const BATCH        = 6000   // pts per frame — dense paths stay bright at steady state
+const FADE_ALPHA   = 0.015  // per-frame fade — paths decay over ~4s, sparse paths sparkle
+const POINT_OPACITY = 0.025
 
 // Slowly oscillate parameters — shape breathes without changing topology
 // Small amplitudes (~5%) keep the overall form recognisable; non-commensurate
