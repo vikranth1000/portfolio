@@ -72,21 +72,27 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Clifford attractor annotation — dim always, expands on hover */}
-      <div className="absolute bottom-16 right-6 z-10 text-right group cursor-default select-none">
-        <p className="text-xs font-mono tracking-wider text-white/25 group-hover:text-white/60 transition-colors duration-300">
-          Clifford Attractor
-        </p>
-        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500">
-          <div className="overflow-hidden">
-            <div className="pt-2 text-[10px] font-mono leading-relaxed space-y-0.5">
-              <p className="text-white/35">x = sin(Ay) + C·cos(Ax)</p>
-              <p className="text-white/35">y = sin(Bx) + D·cos(By)</p>
+      {/* Clifford attractor annotation — trigger always visible, card on hover */}
+      <div className="absolute bottom-16 right-6 z-10 group cursor-default select-none">
+        {/* Info card — floats above the trigger */}
+        <div className="absolute bottom-full right-0 mb-3 w-72 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none">
+          <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4">
+            <p className="text-sm font-semibold text-white/80 mb-2">Clifford Strange Attractor</p>
+            <p className="text-xs text-white/50 leading-relaxed mb-3">
+              A chaotic dynamical system — two simple equations, iterated 160,000 times, producing a pattern that never exactly repeats.
+            </p>
+            <div className="border-t border-white/5 pt-3 font-mono text-xs text-white/30 space-y-0.5">
+              <p>x = sin(Ay) + C·cos(Ax)</p>
+              <p>y = sin(Bx) + D·cos(By)</p>
               <p className="pt-1 text-white/20">A=−1.4  B=1.6  C=1.0  D=0.7</p>
-              <p className="text-white/20">160,000 iterations</p>
             </div>
           </div>
         </div>
+
+        {/* Trigger label */}
+        <p className="text-xs font-mono tracking-wider text-white/25 group-hover:text-white/60 transition-colors duration-300 text-right">
+          Clifford Attractor
+        </p>
       </div>
     </section>
   )
