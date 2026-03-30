@@ -6,8 +6,9 @@ const A = -1.4, B = 1.6, C = 1.0, D = 0.7
 
 const WARMUP        = 2000   // steps before we start drawing (gets us onto the attractor)
 const SAMPLE_STEPS  = 10000  // steps used to measure the attractor's bounding box
-const INITIAL_DRAW  = 160000 // points drawn synchronously on first paint — shape appears instantly
-const BATCH_IDLE    = 300    // points per frame in the ongoing loop (keeps it subtly alive)
+const BATCH_REVEAL  = 8000   // points per frame during reveal — full form emerges in ~330ms
+const BATCH_IDLE    = 300    // points per frame after reveal (keeps it subtly alive)
+const REVEAL_COUNT  = 160000 // total points in the reveal phase
 const POINT_OPACITY = 0.025  // low enough that density creates the gradation naturally
 
 function step(x: number, y: number) {
@@ -64,22 +65,18 @@ export default function HeroBackground() {
       const cx = w * 0.65 - ((minX + maxX) / 2) * scale
       const cy = h * 0.50 - ((minY + maxY) / 2) * scale
 
-      // Draw all initial points synchronously — attractor fully visible on first paint
-      ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
-      for (let i = 0; i < INITIAL_DRAW; i++) {
-        ;({ x, y } = step(x, y))
-        ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
-      }
-
-      // Idle loop — adds density to denser paths, keeps it subtly alive
+      let drawn = 0
       state.active = true
+
       function draw() {
         if (!state.active) return
+        const batch = drawn < REVEAL_COUNT ? BATCH_REVEAL : BATCH_IDLE
         ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
-        for (let i = 0; i < BATCH_IDLE; i++) {
+        for (let i = 0; i < batch; i++) {
           ;({ x, y } = step(x, y))
           ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
         }
+        drawn += batch
         state.raf = requestAnimationFrame(draw)
       }
 

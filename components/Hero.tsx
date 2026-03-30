@@ -17,6 +17,8 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen">
       <HeroBackground />
+      {/* Left-fade gradient — darkens text zone, lets attractor breathe on the right */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#090909] via-[#090909]/50 to-transparent pointer-events-none z-[1]" />
       <div className="relative z-10 flex flex-col justify-center min-h-screen max-w-5xl mx-auto px-6 pt-14">
         <motion.div
           variants={container}

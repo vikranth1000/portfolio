@@ -12,6 +12,7 @@ const NAV_LINKS = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [vrCopied, setVrCopied] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -33,6 +34,32 @@ export default function Nav() {
     if (el) el.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const copyLink = () => {
+    navigator.clipboard.writeText('https://vikranthreddimasu.xyz')
+    setVrCopied(true)
+    setTimeout(() => setVrCopied(false), 2000)
+  }
+
+  useEffect(() => {
+    let lastKey = ''
+    let timer: ReturnType<typeof setTimeout>
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+      const key = e.key.toLowerCase()
+      if (key === 'v') {
+        lastKey = 'v'
+        clearTimeout(timer)
+        timer = setTimeout(() => { lastKey = '' }, 800)
+      } else if (key === 'r' && lastKey === 'v') {
+        copyLink()
+        lastKey = ''
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => { document.removeEventListener('keydown', onKeyDown); clearTimeout(timer) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
       <header
@@ -43,13 +70,28 @@ export default function Nav() {
         }`}
       >
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          {/* Monogram */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors"
-          >
-            VR
-          </button>
+          {/* Monogram — click or press V→R to copy site URL */}
+          <div className="relative">
+            <button
+              onClick={copyLink}
+              className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors"
+            >
+              VR
+            </button>
+            <AnimatePresence>
+              {vrCopied && (
+                <motion.span
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs text-accent-green whitespace-nowrap pointer-events-none"
+                >
+                  Copied!
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-6">
