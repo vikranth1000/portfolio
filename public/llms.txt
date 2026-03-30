@@ -1,0 +1,50 @@
+# Vikranth Reddimasu
+
+> ML Engineer building AI systems that scale. Open to work.
+
+## About
+
+Vikranth Reddimasu is an ML Engineer and Data Scientist specializing in deep learning, reinforcement learning, and production AI systems. He builds scalable ML pipelines and AI-powered applications with a focus on practical, measurable impact.
+
+## Contact
+
+- Email: vikranthreddimasu@gmail.com
+- GitHub: https://github.com/vikranthreddimasu
+- LinkedIn: https://linkedin.com/in/vikranthreddimasu
+- Website: https://vikranthreddimasu.xyz
+- Resume: https://vikranthreddimasu.xyz/resume.pdf
+
+## Projects
+
+### Pac-Man AI
+Five DQN (Deep Q-Network) agent variants trained to play Pac-Man using deep reinforcement learning. Implements and compares Vanilla DQN, Double DQN, Dueling DQN, DQN with Prioritized Experience Replay, and Rainbow DQN architectures.
+
+- Tech: Python, PyTorch, NumPy, OpenCV
+- GitHub: https://github.com/vikranthreddimasu/pacman-ai
+- Tags: Reinforcement Learning, Deep Learning, PyTorch
+
+## Skills
+
+### Machine Learning & AI
+PyTorch, TensorFlow, scikit-learn, HuggingFace Transformers, LangChain, OpenAI API, Reinforcement Learning, Computer Vision, Natural Language Processing
+
+### Programming Languages
+Python, SQL, TypeScript, R, Bash
+
+### Data Engineering
+Pandas, NumPy, Apache Spark, Polars, Jupyter, dbt
+
+### Frontend & Web
+React, Next.js, Tailwind CSS, Framer Motion, TypeScript
+
+### Cloud & MLOps
+AWS, Docker, Git, MLflow, Weights & Biases, FastAPI
+
+## Status
+
+Currently open to ML Engineer, Data Scientist, and AI Engineer roles.
+
+## Links
+
+- Extended profile: https://vikranthreddimasu.xyz/llms-full.txt
+- All projects: https://vikranthreddimasu.xyz/#projects

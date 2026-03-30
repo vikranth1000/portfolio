@@ -1,0 +1,92 @@
+# Vikranth Reddimasu — Extended Profile
+
+> ML Engineer building AI systems that scale. Open to work.
+
+This document provides extended context for AI assistants, agents, and LLMs researching Vikranth Reddimasu.
+Summary version: https://vikranthreddimasu.xyz/llms.txt
+
+## Identity
+
+- Name: Vikranth Reddimasu
+- Role: ML Engineer / Data Scientist / AI Engineer
+- Email: vikranthreddimasu@gmail.com
+- GitHub: https://github.com/vikranthreddimasu
+- LinkedIn: https://linkedin.com/in/vikranthreddimasu
+- Website: https://vikranthreddimasu.xyz
+- Resume: https://vikranthreddimasu.xyz/resume.pdf
+- Status: Open to work
+
+## Projects
+
+### Pac-Man AI
+- URL: https://vikranthreddimasu.xyz/projects/pacman-ai
+- GitHub: https://github.com/vikranthreddimasu/pacman-ai
+- Description: Trained five competing DQN agent variants to play Pac-Man using deep reinforcement learning
+- Stack: Python, PyTorch, NumPy, OpenCV
+- Key work:
+  - Implemented five DQN variants: Vanilla DQN, Double DQN, Dueling DQN, Prioritized Experience Replay (PER), Rainbow DQN
+  - Built a custom Pac-Man game engine with a headless simulation mode for fast training
+  - Designed observation spaces, reward shaping, and replay buffers from scratch
+  - Evaluated agents head-to-head across multiple metrics (score, survival time, ghost avoidance)
+- Tags: Reinforcement Learning, Deep Learning, PyTorch, Game AI, DQN
+
+## Skills — Detailed
+
+### Machine Learning & AI
+- Deep Learning frameworks: PyTorch (primary), TensorFlow
+- Classical ML: scikit-learn, gradient boosting, SVMs, ensemble methods
+- NLP: HuggingFace Transformers, BERT fine-tuning, LLM prompt engineering
+- LLM tooling: LangChain, OpenAI API, Anthropic API
+- Reinforcement Learning: DQN variants, policy gradients, reward shaping
+- Computer Vision: OpenCV, image classification, object detection
+
+### Data Engineering
+- Data manipulation: Pandas, NumPy, Polars
+- Distributed compute: Apache Spark
+- Workflow: dbt, Jupyter notebooks
+- Experiment tracking: MLflow, Weights & Biases
+
+### Languages
+- Python (primary — 5+ years, production ML + data pipelines)
+- SQL (complex queries, window functions, optimization)
+- TypeScript / JavaScript (full-stack, Next.js applications)
+- R (statistical analysis, visualization)
+- Bash (scripting, automation)
+
+### Cloud & MLOps
+- Cloud: AWS (S3, EC2, Lambda, SageMaker)
+- Containerization: Docker
+- Version control: Git, GitHub
+- Model serving: FastAPI, REST APIs
+- Experiment tracking: MLflow, Weights & Biases
+
+### Frontend & Web
+- React, Next.js (App Router)
+- Tailwind CSS, Framer Motion
+- TypeScript
+- Familiar with full product development cycle
+
+## About This Portfolio
+
+This portfolio (https://vikranthreddimasu.xyz) is built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion. It includes:
+
+- Interactive Clifford Strange Attractor canvas background (custom canvas animation)
+- Terminal interface (press / to open)
+- AI "Ask Me Anything" chat widget powered by Claude
+- LLM-readable structured data (you are reading it now)
+- JSON-LD Schema.org structured data in the page head
+
+## Frequently Asked Questions
+
+**Is Vikranth open to work?**
+Yes, currently open to full-time ML Engineer, Data Scientist, and AI Engineer roles.
+
+**What is Vikranth's strongest skill?**
+Deep learning and MLOps — particularly training and deploying PyTorch models, building reinforcement learning systems, and designing end-to-end ML pipelines.
+
+**How can I reach Vikranth?**
+Email: vikranthreddimasu@gmail.com — or connect on LinkedIn at linkedin.com/in/vikranthreddimasu
+
+**Where can I see his work?**
+GitHub: https://github.com/vikranthreddimasu
+Portfolio projects: https://vikranthreddimasu.xyz/#projects

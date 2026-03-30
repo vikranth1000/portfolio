@@ -9,6 +9,28 @@ type Line =
   | { kind: 'output'; text: string }
   | { kind: 'cmd'; name: string; description: string }
   | { kind: 'error'; text: string }
+  | { kind: 'neofetch' }
+
+const MATRIX_CHARS = 'ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789'
+const rand = () => MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]
+const makeRow = (cols: number) => Array.from({ length: cols }, rand).join('')
+
+function MatrixRain() {
+  const COLS = 44
+  const ROWS = 10
+  const [rows, setRows] = useState(() => Array.from({ length: ROWS }, () => makeRow(COLS)))
+  useEffect(() => {
+    const id = setInterval(() => setRows(Array.from({ length: ROWS }, () => makeRow(COLS))), 70)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <div className="text-[#22c55e] text-[11px] leading-snug select-none">
+      {rows.map((row, i) => (
+        <p key={i} style={{ opacity: 0.15 + (i / ROWS) * 0.85 }}>{row}</p>
+      ))}
+    </div>
+  )
+}
 
 function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
   const cmd = raw.trim().toLowerCase()
@@ -21,11 +43,14 @@ function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
           { kind: 'cmd', name: 'ls', description: 'list projects' },
           { kind: 'cmd', name: 'cat about.txt', description: 'about me' },
           { kind: 'cmd', name: 'whoami', description: 'quick intro' },
+          { kind: 'cmd', name: 'neofetch', description: 'system info' },
+          { kind: 'cmd', name: 'cat llms.txt', description: 'AI-readable profile' },
           { kind: 'cmd', name: 'clear', description: 'clear terminal' },
           { kind: 'cmd', name: 'exit', description: 'close' },
           { kind: 'output', text: '' },
           { kind: 'output', text: 'Secrets:' },
           { kind: 'cmd', name: '←→←→', description: '???' },
+          { kind: 'cmd', name: 'matrix', description: '???' },
         ] as Line[],
       }
 
@@ -59,6 +84,20 @@ function getOutput(raw: string): { lines: Line[]; action?: 'clear' | 'exit' } {
         ].map(text => ({ kind: 'output', text })),
       }
 
+    case 'neofetch':
+      return { lines: [{ kind: 'neofetch' }] }
+
+    case 'cat llms.txt':
+      return {
+        lines: [
+          { kind: 'output', text: '# Vikranth Reddimasu' },
+          { kind: 'output', text: '> ML Engineer building AI systems that scale.' },
+          { kind: 'output', text: '' },
+          { kind: 'output', text: 'Full profile available at /llms.txt' },
+          { kind: 'output', text: 'Extended: /llms-full.txt' },
+        ],
+      }
+
     case 'clear':
       return { lines: [], action: 'clear' }
 
@@ -86,8 +125,15 @@ export default function CommandPalette() {
   const [input, setInput] = useState('')
   const [cmdHistory, setCmdHistory] = useState<string[]>([])
   const [histIdx, setHistIdx] = useState(-1)
+  const [matrixActive, setMatrixActive] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const matrixTimerRef = useRef<ReturnType<typeof setTimeout>>()
+
+  // Cleanup matrix timer on unmount
+  useEffect(() => {
+    return () => { if (matrixTimerRef.current) clearTimeout(matrixTimerRef.current) }
+  }, [])
 
   // Open on '/'
   useEffect(() => {
@@ -136,6 +182,21 @@ export default function CommandPalette() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Special case: matrix animation
+    if (input.trim().toLowerCase() === 'matrix') {
+      if (input.trim()) setCmdHistory(h => [...h, input.trim()])
+      setHistIdx(-1)
+      setLines(prev => [...prev, { kind: 'input', text: input }])
+      setInput('')
+      setMatrixActive(true)
+      matrixTimerRef.current = setTimeout(() => {
+        setMatrixActive(false)
+        setLines([{ kind: 'output', text: '// Wake up, Neo...' }])
+      }, 2500)
+      return
+    }
+
     const { lines: outputLines, action } = getOutput(input)
 
     if (action === 'exit') {
@@ -204,26 +265,56 @@ export default function CommandPalette() {
                 className="h-72 overflow-y-auto p-4 space-y-0.5"
                 onClick={() => inputRef.current?.focus()}
               >
-                {lines.map((line, i) => (
-                  <div key={i} className="text-[13px] leading-relaxed">
-                    {line.kind === 'input' ? (
-                      <p>
-                        <span className="text-[#22c55e]">{PROMPT}</span>
-                        <span className="text-white ml-2">{line.text}</span>
-                      </p>
-                    ) : line.kind === 'cmd' ? (
-                      <p className="flex gap-4">
-                        <span className="text-white w-36 shrink-0">{line.name}</span>
-                        <span className="text-[#444]">{line.description}</span>
-                      </p>
-                    ) : line.kind === 'error' ? (
-                      <p className="text-[#ff5f57]">{line.text}</p>
-                    ) : (
-                      <p className="text-[#555]">{line.text}</p>
-                    )}
-                  </div>
-                ))}
-                <div ref={bottomRef} />
+                {matrixActive ? (
+                  <MatrixRain />
+                ) : (
+                  <>
+                    {lines.map((line, i) => (
+                      <div key={i} className="text-[13px] leading-relaxed">
+                        {line.kind === 'input' ? (
+                          <p>
+                            <span className="text-[#22c55e]">{PROMPT}</span>
+                            <span className="text-white ml-2">{line.text}</span>
+                          </p>
+                        ) : line.kind === 'cmd' ? (
+                          <p className="flex gap-4">
+                            <span className="text-white w-36 shrink-0">{line.name}</span>
+                            <span className="text-[#444]">{line.description}</span>
+                          </p>
+                        ) : line.kind === 'error' ? (
+                          <p className="text-[#ff5f57]">{line.text}</p>
+                        ) : line.kind === 'neofetch' ? (
+                          <div className="py-1 space-y-0.5">
+                            <p>
+                              <span className="text-[#22c55e]">vikranth</span>
+                              <span className="text-[#555]">@</span>
+                              <span className="text-[#22c55e]">portfolio</span>
+                            </p>
+                            <p className="text-[#2a2a2a]">{'─'.repeat(26)}</p>
+                            {([
+                              ['OS',     'Portfolio v2.0',          false],
+                              ['Shell',  'Next.js 14 · App Router', false],
+                              ['WM',     'Framer Motion',           false],
+                              ['Langs',  'Python · TypeScript · R', false],
+                              ['Role',   'ML Engineer',             false],
+                              ['GPU',    'PyTorch · CUDA',          false],
+                              ['Status', 'open to work ●',          true ],
+                            ] as [string, string, boolean][]).map(([k, v, accent]) => (
+                              <p key={k} className="flex">
+                                <span className="text-[#888] w-16 shrink-0">{k}</span>
+                                <span className="text-[#333] mr-2">:</span>
+                                <span className={accent ? 'text-[#22c55e]' : 'text-[#aaa]'}>{v}</span>
+                              </p>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-[#555]">{line.text}</p>
+                        )}
+                      </div>
+                    ))}
+                    <div ref={bottomRef} />
+                  </>
+                )}
               </div>
 
               {/* Input */}
@@ -237,8 +328,9 @@ export default function CommandPalette() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent text-white text-[13px] outline-none caret-[#22c55e] placeholder-[#333]"
-                  placeholder="type a command..."
+                  disabled={matrixActive}
+                  className="flex-1 bg-transparent text-white text-[13px] outline-none caret-[#22c55e] placeholder-[#333] disabled:opacity-30"
+                  placeholder={matrixActive ? '' : 'type a command...'}
                   spellCheck={false}
                   autoComplete="off"
                   autoCapitalize="off"

@@ -18,9 +18,20 @@ export default function HomePage() {
         <About />
         <Contact />
         <footer className="max-w-5xl mx-auto px-6 py-8 border-t border-border-subtle mt-8">
-          <p className="text-xs text-text-muted">
-            © {new Date().getFullYear()} Vikranth Reddimasu
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-text-muted">
+              © {new Date().getFullYear()} Vikranth Reddimasu
+            </p>
+            <a
+              href="/llms.txt"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Structured profile for AI assistants and LLMs"
+              className="text-xs font-mono text-text-muted hover:text-text-secondary transition-colors"
+            >
+              AI-readable ↗
+            </a>
+          </div>
         </footer>
       </main>
     </>

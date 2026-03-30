@@ -7,6 +7,8 @@ import ConsoleMessage from '@/components/ConsoleMessage'
 import KonamiCode from '@/components/KonamiCode'
 import CommandPalette from '@/components/CommandPalette'
 import KeyboardHint from '@/components/KeyboardHint'
+import ScrollProgress from '@/components/ScrollProgress'
+import AskMeAnything from '@/components/AskMeAnything'
 
 export const metadata: Metadata = {
   title: 'Vikranth Reddimasu — ML Engineer',
@@ -18,15 +20,47 @@ export const metadata: Metadata = {
   },
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Vikranth Reddimasu',
+  jobTitle: 'ML Engineer',
+  description: 'ML Engineer and Data Scientist building AI systems that scale.',
+  url: 'https://vikranthreddimasu.xyz',
+  email: 'vikranthreddimasu@gmail.com',
+  sameAs: [
+    'https://github.com/vikranthreddimasu',
+    'https://linkedin.com/in/vikranthreddimasu',
+  ],
+  knowsAbout: [
+    'Machine Learning',
+    'Deep Learning',
+    'Reinforcement Learning',
+    'Natural Language Processing',
+    'Computer Vision',
+    'PyTorch',
+    'TensorFlow',
+    'Python',
+    'MLOps',
+    'Data Science',
+  ],
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="bg-base text-text-primary antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <ScrollProgress />
         <CustomCursor />
         <ConsoleMessage />
         <KonamiCode />
         <CommandPalette />
         <KeyboardHint />
+        <AskMeAnything />
         {children}
       </body>
     </html>
