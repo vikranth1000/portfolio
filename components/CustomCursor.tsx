@@ -27,12 +27,19 @@ export default function CustomCursor() {
       dot.classList.toggle('hovered', isInteractive)
     }
 
+    const onMouseLeave = () => { dot.style.opacity = '0' }
+    const onMouseEnter = () => { dot.style.opacity = '' }
+
     document.addEventListener('mousemove', onMouseMove)
     document.addEventListener('mouseover', onMouseOver)
+    document.addEventListener('mouseleave', onMouseLeave)
+    document.addEventListener('mouseenter', onMouseEnter)
 
     return () => {
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseover', onMouseOver)
+      document.removeEventListener('mouseleave', onMouseLeave)
+      document.removeEventListener('mouseenter', onMouseEnter)
     }
   }, [])
 

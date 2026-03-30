@@ -73,8 +73,8 @@ export default function Hero() {
       </div>
 
       {/* Clifford attractor annotation — dim always, expands on hover */}
-      <div className="absolute bottom-8 right-8 z-10 text-right group cursor-default select-none">
-        <p className="text-[11px] font-mono tracking-wider text-white/15 group-hover:text-white/50 transition-colors duration-300">
+      <div className="absolute bottom-16 right-6 z-10 text-right group cursor-default select-none">
+        <p className="text-xs font-mono tracking-wider text-white/25 group-hover:text-white/60 transition-colors duration-300">
           Clifford Attractor
         </p>
         <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500">
