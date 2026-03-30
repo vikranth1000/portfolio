@@ -1,11 +1,22 @@
 'use client'
 import { useEffect, useRef } from 'react'
 
-const NODE_COUNT = 42
-const MAX_DIST = 160
-const SPEED = 0.3
-const NODE_OPACITY = 0.18
-const EDGE_OPACITY_MAX = 0.07
+// Clifford attractor parameters — produces a dense, flowing rose-like form
+const A = -1.4, B = 1.6, C = 1.0, D = 0.7
+
+const WARMUP       = 2000   // steps before we start drawing (gets us onto the attractor)
+const SAMPLE_STEPS = 10000  // steps used to measure the attractor's bounding box
+const BATCH_REVEAL = 2000   // points per frame during the initial reveal
+const BATCH_IDLE   = 300    // points per frame after full reveal (keeps it subtly alive)
+const REVEAL_COUNT = 160000 // total points in the reveal phase
+const POINT_OPACITY = 0.025 // low enough that density creates the gradation naturally
+
+function step(x: number, y: number) {
+  return {
+    x: Math.sin(A * y) + C * Math.cos(A * x),
+    y: Math.sin(B * x) + D * Math.cos(B * y),
+  }
+}
 
 export default function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -14,63 +25,75 @@ export default function HeroBackground() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const canvas = canvasRef.current!
-    const ctx = canvas.getContext('2d')!
-    let raf: number
+    const state = { raf: 0, active: false }
 
-    const resize = () => {
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
+    function start() {
+      state.active = false
+      cancelAnimationFrame(state.raf)
+
+      const w = canvas.offsetWidth
+      const h = canvas.offsetHeight
+      if (!w || !h) return
+
+      canvas.width = w
+      canvas.height = h
+
+      const ctx = canvas.getContext('2d')!
+      ctx.clearRect(0, 0, w, h)
+
+      // Warm up — get onto the attractor before drawing
+      let x = 0.1, y = 0.1
+      for (let i = 0; i < WARMUP; i++) ({ x, y } = step(x, y))
+
+      // Sample the attractor to find its natural bounding box
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+      let sx = x, sy = y
+      for (let i = 0; i < SAMPLE_STEPS; i++) {
+        ;({ x: sx, y: sy } = step(sx, sy))
+        if (sx < minX) minX = sx
+        if (sx > maxX) maxX = sx
+        if (sy < minY) minY = sy
+        if (sy > maxY) maxY = sy
+      }
+
+      // Scale to fill roughly the right 65% of the canvas height-wise
+      const attrW = maxX - minX
+      const attrH = maxY - minY
+      const scale = Math.min(w * 0.6, h * 0.88) / Math.max(attrW, attrH)
+
+      // Center the attractor in the right portion — right of the hero text
+      const cx = w * 0.65 - ((minX + maxX) / 2) * scale
+      const cy = h * 0.50 - ((minY + maxY) / 2) * scale
+
+      let drawn = 0
+      state.active = true
+
+      function draw() {
+        if (!state.active) return
+
+        const batch = drawn < REVEAL_COUNT ? BATCH_REVEAL : BATCH_IDLE
+        ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
+
+        for (let i = 0; i < batch; i++) {
+          ;({ x, y } = step(x, y))
+          ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
+        }
+
+        drawn += batch
+        state.raf = requestAnimationFrame(draw)
+      }
+
+      draw()
     }
-    resize()
-    const ro = new ResizeObserver(resize)
+
+    start()
+
+    const ro = new ResizeObserver(start)
     ro.observe(canvas)
 
-    const nodes = Array.from({ length: NODE_COUNT }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * SPEED * 2,
-      vy: (Math.random() - 0.5) * SPEED * 2,
-    }))
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      for (const n of nodes) {
-        n.x += n.vx
-        n.y += n.vy
-        if (n.x < 0 || n.x > canvas.width) n.vx *= -1
-        if (n.y < 0 || n.y > canvas.height) n.vy *= -1
-      }
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x
-          const dy = nodes[i].y - nodes[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < MAX_DIST) {
-            ctx.beginPath()
-            ctx.moveTo(nodes[i].x, nodes[i].y)
-            ctx.lineTo(nodes[j].x, nodes[j].y)
-            ctx.strokeStyle = `rgba(255,255,255,${(EDGE_OPACITY_MAX * (1 - dist / MAX_DIST)).toFixed(3)})`
-            ctx.lineWidth = 0.5
-            ctx.stroke()
-          }
-        }
-      }
-
-      for (const n of nodes) {
-        ctx.beginPath()
-        ctx.arc(n.x, n.y, 1.5, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255,255,255,${NODE_OPACITY})`
-        ctx.fill()
-      }
-
-      raf = requestAnimationFrame(draw)
-    }
-
-    draw()
     return () => {
-      cancelAnimationFrame(raf)
+      state.active = false
+      cancelAnimationFrame(state.raf)
       ro.disconnect()
     }
   }, [])
