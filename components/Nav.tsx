@@ -85,7 +85,7 @@ export default function Nav() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 4 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs text-accent-green whitespace-nowrap pointer-events-none"
+                  className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-xs text-accent-green whitespace-nowrap pointer-events-none"
                 >
                   Copied!
                 </motion.span>
