@@ -7,9 +7,10 @@ const A = -1.4, B = 1.6, C = 1.0, D = 0.7
 const WARMUP        = 2000   // steps before we start drawing (gets us onto the attractor)
 const SAMPLE_STEPS  = 10000  // steps used to measure the attractor's bounding box
 const BATCH_REVEAL  = 8000   // points per frame during reveal — full form emerges in ~330ms
-const BATCH_IDLE    = 300    // points per frame after reveal (keeps it subtly alive)
+const BATCH_IDLE    = 2000   // points per frame in idle — enough to see the flow clearly
 const REVEAL_COUNT  = 160000 // total points in the reveal phase
 const POINT_OPACITY = 0.025  // low enough that density creates the gradation naturally
+const FADE_ALPHA    = 0.012  // per-frame fade — dense paths glow, sparse paths flicker out over ~5s
 
 function step(x: number, y: number) {
   return {
@@ -70,13 +71,28 @@ export default function HeroBackground() {
 
       function draw() {
         if (!state.active) return
-        const batch = drawn < REVEAL_COUNT ? BATCH_REVEAL : BATCH_IDLE
-        ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
-        for (let i = 0; i < batch; i++) {
-          ;({ x, y } = step(x, y))
-          ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
+
+        if (drawn < REVEAL_COUNT) {
+          // Reveal phase: accumulate density, no fading — shape builds up fast
+          ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
+          for (let i = 0; i < BATCH_REVEAL; i++) {
+            ;({ x, y } = step(x, y))
+            ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
+          }
+          drawn += BATCH_REVEAL
+        } else {
+          // Idle phase: fade the canvas slightly, then paint new points
+          // Dense paths get refreshed constantly → stay bright
+          // Sparse paths aren't revisited often → fade and flicker
+          ctx.fillStyle = `rgba(9,9,9,${FADE_ALPHA})`
+          ctx.fillRect(0, 0, w, h)
+          ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
+          for (let i = 0; i < BATCH_IDLE; i++) {
+            ;({ x, y } = step(x, y))
+            ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
+          }
         }
-        drawn += batch
+
         state.raf = requestAnimationFrame(draw)
       }
 
