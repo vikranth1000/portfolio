@@ -13,8 +13,8 @@ const KEYFRAMES: [number, number, number, number][] = [
 
 const BATCH          = 6000    // points per frame
 const WARMUP         = 500
-const FADE           = 0.20    // aggressive: stray dots gone in ~0.25s (15 frames)
-const POINT_OPACITY  = 0.30    // bright — dense paths glow white, equilibrium = opacity/fade
+const FADE           = 0.35    // very aggressive: stray dots gone in ~8 frames (0.13s)
+const POINT_OPACITY  = 0.40    // bright — dense paths glow white, equilibrium = opacity/fade
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
