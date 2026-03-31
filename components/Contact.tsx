@@ -58,7 +58,7 @@ export default function Contact() {
               download={link.download ? true : undefined}
               className="group flex items-center justify-between border-b border-border-subtle py-4 hover:border-border-hover transition-colors"
             >
-              <span className="text-sm text-[#444] uppercase tracking-widest">
+              <span className="text-sm text-label uppercase tracking-widest">
                 {link.label}
               </span>
               <span className="text-base text-text-secondary group-hover:text-text-primary group-hover:translate-x-1 transition-all duration-200">

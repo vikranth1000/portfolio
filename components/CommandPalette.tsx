@@ -279,7 +279,7 @@ export default function CommandPalette() {
                         ) : line.kind === 'cmd' ? (
                           <p className="flex gap-4">
                             <span className="text-white w-36 shrink-0">{line.name}</span>
-                            <span className="text-[#444]">{line.description}</span>
+                            <span className="text-label">{line.description}</span>
                           </p>
                         ) : line.kind === 'error' ? (
                           <p className="text-[#ff5f57]">{line.text}</p>
