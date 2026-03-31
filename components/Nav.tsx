@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLenis } from 'lenis/react'
+import { useRouter } from 'next/navigation'
 
 const NAV_LINKS = [
   { label: 'Work', href: '#projects' },
@@ -15,8 +16,7 @@ const NAV_LINKS = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [vrCopied, setVrCopied] = useState(false)
-  const [vrOffset, setVrOffset] = useState({ x: 0, y: 0 })
+  const router = useRouter()
 
   const lenis = useLenis((lenis) => {
     setScrolled(lenis.scroll > 20)
@@ -35,34 +35,9 @@ export default function Nav() {
     lenis?.scrollTo(href, { offset: -20 })
   }
 
-  const copyLink = () => {
-    const angle = Math.random() * 2 * Math.PI
-    const dist = 26 + Math.random() * 16
-    setVrOffset({ x: Math.round(Math.cos(angle) * dist), y: Math.round(Math.sin(angle) * dist) })
-    navigator.clipboard.writeText('https://vikranthreddimasu.xyz')
-    setVrCopied(true)
-    setTimeout(() => setVrCopied(false), 2000)
+  const handleMonogramClick = () => {
+    router.push('/')
   }
-
-  useEffect(() => {
-    let lastKey = ''
-    let timer: ReturnType<typeof setTimeout>
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      const key = e.key.toLowerCase()
-      if (key === 'v') {
-        lastKey = 'v'
-        clearTimeout(timer)
-        timer = setTimeout(() => { lastKey = '' }, 800)
-      } else if (key === 'r' && lastKey === 'v') {
-        copyLink()
-        lastKey = ''
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => { document.removeEventListener('keydown', onKeyDown); clearTimeout(timer) }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
@@ -74,31 +49,13 @@ export default function Nav() {
         }`}
       >
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          {/* Monogram — click or press V→R to copy site URL */}
-          <div className="relative">
-            <button
-              onClick={copyLink}
-              className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors"
-            >
-              VR
-            </button>
-            {/* Toast floats outward in a random direction each click */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible">
-              <AnimatePresence>
-                {vrCopied && (
-                  <motion.span
-                    initial={{ opacity: 0, x: 0, y: 0, scale: 0.7 }}
-                    animate={{ opacity: 1, x: vrOffset.x, y: vrOffset.y, scale: 1 }}
-                    exit={{ opacity: 0, x: vrOffset.x, y: vrOffset.y }}
-                    transition={{ duration: 0.35, ease: 'easeOut' }}
-                    className="absolute text-xs text-accent-green whitespace-nowrap"
-                  >
-                    Copied!
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+          {/* Monogram — click to navigate to home page */}
+          <button
+            onClick={handleMonogramClick}
+            className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors"
+          >
+            VR
+          </button>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-6">
