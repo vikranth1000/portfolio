@@ -92,21 +92,21 @@ export default function Hero() {
         {/* Info card — floats above the trigger */}
         <div className="absolute bottom-full right-0 mb-3 w-72 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none">
           <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4">
-            <p className="text-sm font-semibold text-white/80 mb-2">Morphing Mandala</p>
+            <p className="text-sm font-semibold text-white/80 mb-2">Morphing Attractor</p>
             <p className="text-xs text-white/50 leading-relaxed mb-3">
-              A Clifford strange attractor whose parameters slowly morph through six configurations, rendered with 6-fold rotational symmetry. Old shapes dissolve as new ones crystallize.
+              A Clifford strange attractor whose parameters slowly morph through six configurations. Old shapes dissolve as new ones crystallize.
             </p>
             <div className="border-t border-white/5 pt-3 font-mono text-xs text-white/30 space-y-0.5">
               <p>x = sin(a·y) + c·cos(a·x)</p>
               <p>y = sin(b·x) + d·cos(b·y)</p>
-              <p className="pt-1 text-white/20">6 keyframes · 6-fold symmetry · 2 min cycle</p>
+              <p className="pt-1 text-white/20">6 keyframes · 2 min cycle</p>
             </div>
           </div>
         </div>
 
         {/* Trigger label */}
         <p className="text-xs font-mono tracking-wider text-white/25 group-hover:text-white/60 transition-colors duration-300 text-right">
-          Morphing Mandala
+          Morphing Attractor
         </p>
       </div>
     </section>

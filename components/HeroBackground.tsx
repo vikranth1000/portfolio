@@ -11,19 +11,16 @@ const KEYFRAMES: [number, number, number, number][] = [
   [ 1.1,  -1.3,  -1.6,   1.5 ],  // compact core
 ]
 
-const SYMMETRY       = 6       // N-fold rotational symmetry → mandala
-const BASE_BATCH     = 1000    // points per frame (×SYMMETRY = 6000 total draws)
+const BATCH          = 6000    // points per frame
 const WARMUP         = 500
-const FADE_HOLD      = 0.05    // fade during keyframe hold — aggressive to prevent density buildup
-const FADE_MORPH     = 0.03    // slower fade during transition — some overlap, no mud
-const POINT_OPACITY  = 0.06    // dimmer per-point; symmetry multiplies visual density
+const FADE_HOLD      = 0.030   // fade during keyframe hold
+const FADE_MORPH     = 0.015   // slower fade during transition → ghostly overlap
+const POINT_OPACITY  = 0.10    // per-point brightness
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
 const NOISE_AMP      = 0.05    // organic drift layered on params
 const SAMPLE         = 5000    // initial bounding-box sampling iterations
-
-const TWO_PI = Math.PI * 2
 
 /* ── Utilities ── */
 
@@ -57,15 +54,6 @@ export default function HeroBackground() {
 
       const ctx = canvas.getContext('2d')!
       ctx.clearRect(0, 0, w, h)
-
-      // Precompute symmetry trig
-      const cosK = new Float64Array(SYMMETRY)
-      const sinK = new Float64Array(SYMMETRY)
-      for (let k = 0; k < SYMMETRY; k++) {
-        const ang = k * TWO_PI / SYMMETRY
-        cosK[k] = Math.cos(ang)
-        sinK[k] = Math.sin(ang)
-      }
 
       // Init with first keyframe
       const kf = KEYFRAMES[0]
@@ -128,15 +116,15 @@ export default function HeroBackground() {
         const scale = Math.min(w * 0.55, h * 0.80) / Math.max(attrW, attrH)
         const acx = (bMinX + bMaxX) / 2
         const acy = (bMinY + bMaxY) / 2
-        const drawCx = w * 0.65
-        const drawCy = h * 0.50
+        const cx = w * 0.65 - acx * scale
+        const cy = h * 0.50 - acy * scale
 
-        // Draw batch with symmetry + track frame bounds
+        // Draw batch + track frame bounds
         ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
         let fMinX = Infinity, fMaxX = -Infinity
         let fMinY = Infinity, fMaxY = -Infinity
 
-        for (let i = 0; i < BASE_BATCH; i++) {
+        for (let i = 0; i < BATCH; i++) {
           const nx = Math.sin(a * y) + c * Math.cos(a * x)
           const ny = Math.sin(b * x) + d * Math.cos(b * y)
           x = nx; y = ny
@@ -146,16 +134,7 @@ export default function HeroBackground() {
           if (x < fMinX) fMinX = x; if (x > fMaxX) fMaxX = x
           if (y < fMinY) fMinY = y; if (y > fMaxY) fMaxY = y
 
-          const px = (x - acx) * scale
-          const py = (y - acy) * scale
-
-          for (let k = 0; k < SYMMETRY; k++) {
-            ctx.fillRect(
-              (px * cosK[k] - py * sinK[k] + drawCx) | 0,
-              (px * sinK[k] + py * cosK[k] + drawCy) | 0,
-              1, 1,
-            )
-          }
+          ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
         }
 
         // Smooth bounds for next frame
