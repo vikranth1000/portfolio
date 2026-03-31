@@ -13,9 +13,9 @@ const KEYFRAMES: [number, number, number, number][] = [
 
 const BATCH          = 6000    // points per frame
 const WARMUP         = 500
-const FADE_HOLD      = 0.06    // fade during keyframe hold — clears stray points in ~1s
-const FADE_MORPH     = 0.04    // fade during transition — old shape fades in ~2s
-const POINT_OPACITY  = 0.08    // per-point brightness — dense paths stay visible, background stays clean
+const FADE_HOLD      = 0.06    // alpha multiplier decay per frame — stray pixels invisible in ~1s
+const FADE_MORPH     = 0.04    // slower decay during transition — old shape lingers ~2s
+const POINT_OPACITY  = 0.10    // per-point brightness (slightly brighter to compensate for clean fade)
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
@@ -106,9 +106,13 @@ export default function HeroBackground() {
         c = mix(from[2], to[2], t) + noise1D(elapsed * 0.3 + 20) * NOISE_AMP
         d = mix(from[3], to[3], t) + noise1D(elapsed * 0.3 + 30) * NOISE_AMP
 
-        // Fade overlay
-        ctx.fillStyle = `rgba(9,9,9,${fadeA})`
+        // Fade: multiply all pixel alphas toward zero (no stuck ghost pixels)
+        ctx.globalCompositeOperation = 'destination-in'
+        ctx.globalAlpha = 1 - fadeA
+        ctx.fillStyle = '#fff'
         ctx.fillRect(0, 0, w, h)
+        ctx.globalCompositeOperation = 'source-over'
+        ctx.globalAlpha = 1
 
         // Scale & center from smooth bounds
         const attrW = bMaxX - bMinX || 1
