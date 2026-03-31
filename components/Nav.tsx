@@ -6,6 +6,8 @@ import { useLenis } from 'lenis/react'
 
 const NAV_LINKS = [
   { label: 'Work', href: '#projects' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Education', href: '#education' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ]
