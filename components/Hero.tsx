@@ -34,16 +34,19 @@ export default function Hero() {
                 Open to work
               </span>
             </span>
-            <span
-              title="This portfolio includes structured data for AI assistants at /llms.txt"
-              className="inline-flex items-center gap-1.5 bg-surface border border-border-subtle rounded-full px-3 py-1.5 cursor-default"
+            <a
+              href="/llms.txt"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Structured data for AI assistants — /llms.txt"
+              className="inline-flex items-center gap-1.5 bg-surface border border-border-subtle rounded-full px-3 py-1.5 hover:border-border-hover transition-colors no-underline"
             >
               <svg width="9" height="9" viewBox="0 0 10 10" fill="none" className="text-text-secondary" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
                 <circle cx="5" cy="5" r="4"/>
                 <path d="M2.5 5h5M5 2.5v5"/>
               </svg>
               <span className="text-xs text-text-secondary tracking-widest uppercase">AI-readable</span>
-            </span>
+            </a>
           </motion.div>
 
           {/* Name */}

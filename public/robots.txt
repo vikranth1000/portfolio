@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Machine-readable AI content summary: /llms.txt
+# Extended profile: /llms-full.txt
+
+Sitemap: https://vikranthreddimasu.xyz/sitemap.xml

@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     description: 'ML Engineer building AI systems that scale.',
     type: 'website',
   },
+  alternates: {
+    types: {
+      'text/plain': '/llms.txt',
+    },
+  },
 }
 
 const jsonLd = {
