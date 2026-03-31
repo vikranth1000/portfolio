@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLenis } from 'lenis/react'
 
 const NAV_LINKS = [
   { label: 'Work', href: '#projects' },
@@ -15,11 +16,9 @@ export default function Nav() {
   const [vrCopied, setVrCopied] = useState(false)
   const [vrOffset, setVrOffset] = useState({ x: 0, y: 0 })
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const lenis = useLenis((lenis) => {
+    setScrolled(lenis.scroll > 20)
+  })
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -31,8 +30,7 @@ export default function Nav() {
 
   const handleNavClick = (href: string) => {
     setMenuOpen(false)
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    lenis?.scrollTo(href, { offset: -20 })
   }
 
   const copyLink = () => {

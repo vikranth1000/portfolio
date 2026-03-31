@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useLenis } from 'lenis/react'
 import HeroBackground from './HeroBackground'
 
 const container = {
@@ -14,6 +15,7 @@ const item = {
 }
 
 export default function Hero() {
+  const lenis = useLenis()
   return (
     <section className="relative min-h-screen">
       <HeroBackground />
@@ -68,7 +70,7 @@ export default function Hero() {
           {/* CTAs */}
           <motion.div variants={item} className="flex items-center gap-3 flex-wrap">
             <button
-              onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => lenis?.scrollTo('#projects', { offset: -20 })}
               className="bg-text-primary text-[#090909] px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-white/90 transition-colors"
             >
               View Work

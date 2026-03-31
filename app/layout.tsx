@@ -8,6 +8,7 @@ import KonamiCode from '@/components/KonamiCode'
 import CommandPalette from '@/components/CommandPalette'
 import KeyboardHint from '@/components/KeyboardHint'
 import ScrollProgress from '@/components/ScrollProgress'
+import SmoothScroll from '@/components/SmoothScroll'
 import AskMeAnything from '@/components/AskMeAnything'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
@@ -60,15 +61,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <ScrollProgress />
-        <CustomCursor />
-        <ConsoleMessage />
-        <KonamiCode />
-        <CommandPalette />
-        <KeyboardHint />
-        <AskMeAnything />
-        {children}
-        <SpeedInsights />
+        <SmoothScroll>
+          <ScrollProgress />
+          <CustomCursor />
+          <ConsoleMessage />
+          <KonamiCode />
+          <CommandPalette />
+          <KeyboardHint />
+          <AskMeAnything />
+          {children}
+          <SpeedInsights />
+        </SmoothScroll>
       </body>
     </html>
   )
