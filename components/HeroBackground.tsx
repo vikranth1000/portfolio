@@ -13,9 +13,9 @@ const KEYFRAMES: [number, number, number, number][] = [
 
 const BATCH          = 6000    // points per frame
 const WARMUP         = 500
-const FADE_HOLD      = 0.06    // alpha multiplier decay per frame — stray pixels invisible in ~1s
-const FADE_MORPH     = 0.04    // slower decay during transition — old shape lingers ~2s
-const POINT_OPACITY  = 0.10    // per-point brightness (slightly brighter to compensate for clean fade)
+const FADE_HOLD      = 0.07    // alpha decay per frame — stray pixels invisible in ~1s
+const FADE_MORPH     = 0.05    // slower decay during transition — old shape lingers ~1.5s
+const POINT_OPACITY  = 0.25    // bright dots — dense paths glow white, thin paths clearly visible
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
