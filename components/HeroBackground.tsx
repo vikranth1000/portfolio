@@ -14,9 +14,9 @@ const KEYFRAMES: [number, number, number, number][] = [
 const SYMMETRY       = 6       // N-fold rotational symmetry → mandala
 const BASE_BATCH     = 1000    // points per frame (×SYMMETRY = 6000 total draws)
 const WARMUP         = 500
-const FADE_HOLD      = 0.025   // fade during keyframe hold
-const FADE_MORPH     = 0.012   // slower fade during transition → ghostly overlap
-const POINT_OPACITY  = 0.08
+const FADE_HOLD      = 0.05    // fade during keyframe hold — aggressive to prevent density buildup
+const FADE_MORPH     = 0.03    // slower fade during transition — some overlap, no mud
+const POINT_OPACITY  = 0.06    // dimmer per-point; symmetry multiplies visual density
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
