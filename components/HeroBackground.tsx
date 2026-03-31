@@ -45,13 +45,15 @@ export default function HeroBackground() {
       state.active = false
       cancelAnimationFrame(state.raf)
 
+      const dpr = window.devicePixelRatio || 1
       const w = canvas.offsetWidth
       const h = canvas.offsetHeight
       if (!w || !h) return
-      canvas.width = w
-      canvas.height = h
+      canvas.width = w * dpr
+      canvas.height = h * dpr
 
       const ctx = canvas.getContext('2d')!
+      ctx.scale(dpr, dpr)
       ctx.clearRect(0, 0, w, h)
 
       // Init with first keyframe
@@ -77,18 +79,6 @@ export default function HeroBackground() {
         if (sx < bMinX) bMinX = sx; if (sx > bMaxX) bMaxX = sx
         if (sy < bMinY) bMinY = sy; if (sy > bMaxY) bMaxY = sy
       }
-
-      // Erase-mask gradient: destination-out uses ONLY the alpha channel,
-      // so premultiplied-alpha RGB rounding errors (the vertical banding
-      // cause) are completely irrelevant.
-      const eraseMask = ctx.createLinearGradient(0, 0, w, 0)
-      eraseMask.addColorStop(0, 'rgba(0,0,0,1)')
-      eraseMask.addColorStop(0.25, 'rgba(0,0,0,1)')
-      eraseMask.addColorStop(0.4, 'rgba(0,0,0,0.85)')
-      eraseMask.addColorStop(0.55, 'rgba(0,0,0,0.6)')
-      eraseMask.addColorStop(0.7, 'rgba(0,0,0,0.3)')
-      eraseMask.addColorStop(0.85, 'rgba(0,0,0,0.1)')
-      eraseMask.addColorStop(1, 'rgba(0,0,0,0)')
 
       const t0 = performance.now()
       state.active = true
@@ -134,6 +124,11 @@ export default function HeroBackground() {
         const cy = h * 0.50 - acy * scale
 
         // Draw batch + track frame bounds
+        // Skip dots in the left text zone (no gradient needed — no banding possible)
+        const fadeStart = w * 0.30   // dots begin to appear here
+        const fadeFull  = w * 0.55   // dots at full opacity here
+        const fadeRange = fadeFull - fadeStart
+
         ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
         let fMinX = Infinity, fMaxX = -Infinity
         let fMinY = Infinity, fMaxY = -Infinity
@@ -148,7 +143,18 @@ export default function HeroBackground() {
           if (x < fMinX) fMinX = x; if (x > fMaxX) fMaxX = x
           if (y < fMinY) fMinY = y; if (y > fMaxY) fMaxY = y
 
-          ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
+          const sx = (x * scale + cx) | 0
+          const sy = (y * scale + cy) | 0
+
+          // Skip dots in text zone, fade in transition zone
+          if (sx < fadeStart) continue
+          if (sx < fadeFull) {
+            ctx.globalAlpha = (sx - fadeStart) / fadeRange
+          }
+          ctx.fillRect(sx, sy, 1, 1)
+          if (sx < fadeFull) {
+            ctx.globalAlpha = 1
+          }
         }
 
         // Smooth bounds for next frame
@@ -158,11 +164,6 @@ export default function HeroBackground() {
           bMinY = mix(bMinY, fMinY, BOUND_LERP)
           bMaxY = mix(bMaxY, fMaxY, BOUND_LERP)
         }
-
-        // Erase dots on left side (destination-out only reads src alpha — no RGB banding)
-        ctx.globalCompositeOperation = 'destination-out'
-        ctx.fillStyle = eraseMask
-        ctx.fillRect(0, 0, w, h)
 
         // Opaque background behind everything — uniform #090909, no artifacts
         ctx.globalCompositeOperation = 'destination-over'
