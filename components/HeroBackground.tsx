@@ -13,9 +13,8 @@ const KEYFRAMES: [number, number, number, number][] = [
 
 const BATCH          = 6000    // points per frame
 const WARMUP         = 500
-const FADE_HOLD      = 0.07    // alpha decay per frame — stray pixels invisible in ~1s
-const FADE_MORPH     = 0.05    // slower decay during transition — old shape lingers ~1.5s
-const POINT_OPACITY  = 0.25    // bright dots — dense paths glow white, thin paths clearly visible
+const FADE           = 0.20    // aggressive: stray dots gone in ~0.25s (15 frames)
+const POINT_OPACITY  = 0.30    // bright — dense paths glow white, equilibrium = opacity/fade
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
@@ -91,11 +90,10 @@ export default function HeroBackground() {
         const idx = Math.floor(pos / cycle)
         const phase = pos % cycle
 
-        // Interpolation factor & fade speed
-        let t = 0, fadeA = FADE_HOLD
+        // Interpolation factor
+        let t = 0
         if (phase >= HOLD_S) {
           t = ease((phase - HOLD_S) / MORPH_S)
-          fadeA = FADE_MORPH
         }
 
         // Interpolate params + organic noise
@@ -106,9 +104,9 @@ export default function HeroBackground() {
         c = mix(from[2], to[2], t) + noise1D(elapsed * 0.3 + 20) * NOISE_AMP
         d = mix(from[3], to[3], t) + noise1D(elapsed * 0.3 + 30) * NOISE_AMP
 
-        // Fade: multiply all pixel alphas toward zero (no stuck ghost pixels)
+        // Fade: multiply all pixel alphas toward zero — no ghosts
         ctx.globalCompositeOperation = 'destination-in'
-        ctx.globalAlpha = 1 - fadeA
+        ctx.globalAlpha = 1 - FADE
         ctx.fillStyle = '#fff'
         ctx.fillRect(0, 0, w, h)
         ctx.globalCompositeOperation = 'source-over'
