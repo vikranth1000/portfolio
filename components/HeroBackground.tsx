@@ -78,6 +78,16 @@ export default function HeroBackground() {
         if (sy < bMinY) bMinY = sy; if (sy > bMaxY) bMaxY = sy
       }
 
+      // Left-fade gradient (drawn on canvas — avoids CSS gradient banding)
+      const leftFade = ctx.createLinearGradient(0, 0, w, 0)
+      leftFade.addColorStop(0, 'rgba(9,9,9,1)')
+      leftFade.addColorStop(0.25, 'rgba(9,9,9,1)')
+      leftFade.addColorStop(0.4, 'rgba(9,9,9,0.85)')
+      leftFade.addColorStop(0.55, 'rgba(9,9,9,0.6)')
+      leftFade.addColorStop(0.7, 'rgba(9,9,9,0.3)')
+      leftFade.addColorStop(0.85, 'rgba(9,9,9,0.1)')
+      leftFade.addColorStop(1, 'rgba(9,9,9,0)')
+
       const t0 = performance.now()
       state.active = true
 
@@ -146,6 +156,16 @@ export default function HeroBackground() {
           bMinY = mix(bMinY, fMinY, BOUND_LERP)
           bMaxY = mix(bMaxY, fMaxY, BOUND_LERP)
         }
+
+        // Left-fade gradient (on canvas — no CSS gradient banding)
+        ctx.fillStyle = leftFade
+        ctx.fillRect(0, 0, w, h)
+
+        // Opaque background behind everything — eliminates transparency artifacts
+        ctx.globalCompositeOperation = 'destination-over'
+        ctx.fillStyle = '#090909'
+        ctx.fillRect(0, 0, w, h)
+        ctx.globalCompositeOperation = 'source-over'
 
         state.raf = requestAnimationFrame(draw)
       }
