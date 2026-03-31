@@ -1,3 +1,5 @@
+import { generateText } from 'ai'
+import { xai } from '@ai-sdk/xai'
 import { NextRequest } from 'next/server'
 
 const SYSTEM_PROMPT = `You are an AI assistant embedded in Vikranth Reddimasu's portfolio website. Your purpose is to help visitors learn about Vikranth.
@@ -46,7 +48,7 @@ Built with Next.js 14, TypeScript, Tailwind CSS, Framer Motion. Features an inte
 - Keep responses brief and direct`
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.XAI_API_KEY) {
     return Response.json({
       content: "AI chat isn't configured yet. Reach out directly at vikranthreddimasu@gmail.com!",
     })
@@ -55,30 +57,14 @@ export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json()
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 300,
-        system: SYSTEM_PROMPT,
-        messages,
-      }),
+    const { text } = await generateText({
+      model: xai('grok-3-mini-fast'),
+      system: SYSTEM_PROMPT,
+      messages,
+      maxOutputTokens: 300,
     })
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}))
-      console.error('Anthropic API error:', err)
-      return Response.json({ content: "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com" })
-    }
-
-    const data = await response.json()
-    const content = data.content?.[0]?.type === 'text' ? data.content[0].text : ''
-    return Response.json({ content })
+    return Response.json({ content: text })
   } catch (err) {
     console.error('Chat route error:', err)
     return Response.json({ content: "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com" })
