@@ -78,15 +78,17 @@ export default function HeroBackground() {
         if (sy < bMinY) bMinY = sy; if (sy > bMaxY) bMaxY = sy
       }
 
-      // Left-fade gradient (drawn on canvas — avoids CSS gradient banding)
-      const leftFade = ctx.createLinearGradient(0, 0, w, 0)
-      leftFade.addColorStop(0, 'rgba(9,9,9,1)')
-      leftFade.addColorStop(0.25, 'rgba(9,9,9,1)')
-      leftFade.addColorStop(0.4, 'rgba(9,9,9,0.85)')
-      leftFade.addColorStop(0.55, 'rgba(9,9,9,0.6)')
-      leftFade.addColorStop(0.7, 'rgba(9,9,9,0.3)')
-      leftFade.addColorStop(0.85, 'rgba(9,9,9,0.1)')
-      leftFade.addColorStop(1, 'rgba(9,9,9,0)')
+      // Erase-mask gradient: destination-out uses ONLY the alpha channel,
+      // so premultiplied-alpha RGB rounding errors (the vertical banding
+      // cause) are completely irrelevant.
+      const eraseMask = ctx.createLinearGradient(0, 0, w, 0)
+      eraseMask.addColorStop(0, 'rgba(0,0,0,1)')
+      eraseMask.addColorStop(0.25, 'rgba(0,0,0,1)')
+      eraseMask.addColorStop(0.4, 'rgba(0,0,0,0.85)')
+      eraseMask.addColorStop(0.55, 'rgba(0,0,0,0.6)')
+      eraseMask.addColorStop(0.7, 'rgba(0,0,0,0.3)')
+      eraseMask.addColorStop(0.85, 'rgba(0,0,0,0.1)')
+      eraseMask.addColorStop(1, 'rgba(0,0,0,0)')
 
       const t0 = performance.now()
       state.active = true
@@ -157,11 +159,12 @@ export default function HeroBackground() {
           bMaxY = mix(bMaxY, fMaxY, BOUND_LERP)
         }
 
-        // Left-fade gradient (on canvas — no CSS gradient banding)
-        ctx.fillStyle = leftFade
+        // Erase dots on left side (destination-out only reads src alpha — no RGB banding)
+        ctx.globalCompositeOperation = 'destination-out'
+        ctx.fillStyle = eraseMask
         ctx.fillRect(0, 0, w, h)
 
-        // Opaque background behind everything — eliminates transparency artifacts
+        // Opaque background behind everything — uniform #090909, no artifacts
         ctx.globalCompositeOperation = 'destination-over'
         ctx.fillStyle = '#090909'
         ctx.fillRect(0, 0, w, h)
