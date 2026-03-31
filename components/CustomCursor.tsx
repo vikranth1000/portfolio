@@ -12,6 +12,9 @@ export default function CustomCursor() {
     const dot = dotRef.current
     if (!dot) return
 
+    // Add class to html element to enable cursor: none now that custom cursor is ready
+    document.documentElement.classList.add('custom-cursor-active')
+
     const onMouseMove = (e: MouseEvent) => {
       dot.style.left = `${e.clientX}px`
       dot.style.top = `${e.clientY}px`
@@ -36,6 +39,8 @@ export default function CustomCursor() {
     document.addEventListener('mouseenter', onMouseEnter)
 
     return () => {
+      // Remove class when component unmounts
+      document.documentElement.classList.remove('custom-cursor-active')
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseover', onMouseOver)
       document.removeEventListener('mouseleave', onMouseLeave)

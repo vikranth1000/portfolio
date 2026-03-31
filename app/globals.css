@@ -9,12 +9,16 @@ html {
 body {
   background-color: #090909;
   color: #ffffff;
+}
+
+/* Only hide cursor when custom cursor is active (added by CustomCursor.tsx after hydration) */
+html.custom-cursor-active body {
   cursor: none;
 }
 
-/* Show default cursor on touch devices */
+/* Always show default cursor on touch devices */
 @media (hover: none) {
-  body {
+  html.custom-cursor-active body {
     cursor: auto;
   }
 }
