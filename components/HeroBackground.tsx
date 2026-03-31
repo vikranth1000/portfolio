@@ -1,21 +1,40 @@
 'use client'
 import { useEffect, useRef } from 'react'
 
-// Clifford attractor parameters — produces a dense, flowing rose-like form
-const A = -1.4, B = 1.6, C = 1.0, D = 0.7
+/* ── Keyframes: 6 curated (a,b,c,d) configs → visually distinct shapes ── */
+const KEYFRAMES: [number, number, number, number][] = [
+  [-1.4,   1.6,   1.0,   0.7 ],  // rose / flower
+  [-1.7,   1.3,  -0.1,  -1.2 ],  // butterfly
+  [-1.8,  -2.0,  -0.5,  -0.9 ],  // spiral nebula
+  [ 1.5,  -1.8,   1.6,   0.9 ],  // figure-8
+  [-1.2,  -1.9,   1.8,  -1.6 ],  // organic tendrils
+  [ 1.1,  -1.3,  -1.6,   1.5 ],  // compact core
+]
 
-const WARMUP        = 2000   // steps before we start drawing (gets us onto the attractor)
-const SAMPLE_STEPS  = 10000  // steps used to measure the attractor's bounding box
-const BATCH        = 6000   // pts per frame — dense paths stay bright at steady state
-const FADE_ALPHA   = 0.030  // per-frame fade — faster clearing prevents accumulation
-const POINT_OPACITY = 0.10  // brighter individual dots; ratio POINT_OPACITY/FADE_ALPHA sets equilibrium brightness
+const SYMMETRY       = 6       // N-fold rotational symmetry → mandala
+const BASE_BATCH     = 1000    // points per frame (×SYMMETRY = 6000 total draws)
+const WARMUP         = 500
+const FADE_HOLD      = 0.025   // fade during keyframe hold
+const FADE_MORPH     = 0.012   // slower fade during transition → ghostly overlap
+const POINT_OPACITY  = 0.08
+const HOLD_S         = 12      // seconds at each keyframe
+const MORPH_S        = 8       // seconds transitioning between keyframes
+const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
+const NOISE_AMP      = 0.05    // organic drift layered on params
+const SAMPLE         = 5000    // initial bounding-box sampling iterations
 
-function step(x: number, y: number) {
-  return {
-    x: Math.sin(A * y) + C * Math.cos(A * x),
-    y: Math.sin(B * x) + D * Math.cos(B * y),
-  }
+const TWO_PI = Math.PI * 2
+
+/* ── Utilities ── */
+
+function noise1D(t: number): number {
+  return Math.sin(t * 1.17 + 0.3) * 0.5
+       + Math.sin(t * 2.31 + 1.7) * 0.25
+       + Math.sin(t * 4.63 + 3.1) * 0.125
 }
+
+function ease(t: number): number { return t * t * (3 - 2 * t) }
+function mix(a: number, b: number, t: number): number { return a + (b - a) * t }
 
 export default function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -33,66 +52,127 @@ export default function HeroBackground() {
       const w = canvas.offsetWidth
       const h = canvas.offsetHeight
       if (!w || !h) return
-
       canvas.width = w
       canvas.height = h
 
       const ctx = canvas.getContext('2d')!
       ctx.clearRect(0, 0, w, h)
 
-      // Warm up — get onto the attractor before drawing
-      let x = 0.1, y = 0.1
-      for (let i = 0; i < WARMUP; i++) ({ x, y } = step(x, y))
-
-      // Sample the attractor to find its natural bounding box
-      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
-      let sx = x, sy = y
-      for (let i = 0; i < SAMPLE_STEPS; i++) {
-        ;({ x: sx, y: sy } = step(sx, sy))
-        if (sx < minX) minX = sx
-        if (sx > maxX) maxX = sx
-        if (sy < minY) minY = sy
-        if (sy > maxY) maxY = sy
+      // Precompute symmetry trig
+      const cosK = new Float64Array(SYMMETRY)
+      const sinK = new Float64Array(SYMMETRY)
+      for (let k = 0; k < SYMMETRY; k++) {
+        const ang = k * TWO_PI / SYMMETRY
+        cosK[k] = Math.cos(ang)
+        sinK[k] = Math.sin(ang)
       }
 
-      // Scale to fill roughly the right 65% of the canvas height-wise
-      const attrW = maxX - minX
-      const attrH = maxY - minY
-      const scale = Math.min(w * 0.6, h * 0.88) / Math.max(attrW, attrH)
+      // Init with first keyframe
+      const kf = KEYFRAMES[0]
+      let a = kf[0], b = kf[1], c = kf[2], d = kf[3]
 
-      // Center the attractor in the right portion — right of the hero text
-      const cx = w * 0.65 - ((minX + maxX) / 2) * scale
-      const cy = h * 0.50 - ((minY + maxY) / 2) * scale
+      // Warmup — converge onto attractor
+      let x = 0.1, y = 0.1
+      for (let i = 0; i < WARMUP; i++) {
+        const nx = Math.sin(a * y) + c * Math.cos(a * x)
+        const ny = Math.sin(b * x) + d * Math.cos(b * y)
+        x = nx; y = ny
+      }
 
-      // Single continuous loop — form builds naturally to steady state in ~3s.
-      // Parameters are constant: the attractor traces the same shape on every pass,
-      // creating a shimmer/glow effect as paths fade and are retraced.
+      // Initial bounding box
+      let bMinX = Infinity, bMaxX = -Infinity
+      let bMinY = Infinity, bMaxY = -Infinity
+      let sx = x, sy = y
+      for (let i = 0; i < SAMPLE; i++) {
+        const nx = Math.sin(a * sy) + c * Math.cos(a * sx)
+        const ny = Math.sin(b * sx) + d * Math.cos(b * sy)
+        sx = nx; sy = ny
+        if (sx < bMinX) bMinX = sx; if (sx > bMaxX) bMaxX = sx
+        if (sy < bMinY) bMinY = sy; if (sy > bMaxY) bMaxY = sy
+      }
+
+      const t0 = performance.now()
       state.active = true
 
-      function draw() {
+      function draw(ts: number) {
         if (!state.active) return
 
-        // Fade — pushes all pixels toward background; dense paths are replenished
-        // fast enough to stay bright, sparse paths flicker and dissolve
-        ctx.fillStyle = `rgba(9,9,9,${FADE_ALPHA})`
+        const elapsed = (ts - t0) / 1000
+        const cycle = HOLD_S + MORPH_S
+        const pos = elapsed % (cycle * KEYFRAMES.length)
+        const idx = Math.floor(pos / cycle)
+        const phase = pos % cycle
+
+        // Interpolation factor & fade speed
+        let t = 0, fadeA = FADE_HOLD
+        if (phase >= HOLD_S) {
+          t = ease((phase - HOLD_S) / MORPH_S)
+          fadeA = FADE_MORPH
+        }
+
+        // Interpolate params + organic noise
+        const from = KEYFRAMES[idx]
+        const to = KEYFRAMES[(idx + 1) % KEYFRAMES.length]
+        a = mix(from[0], to[0], t) + noise1D(elapsed * 0.3) * NOISE_AMP
+        b = mix(from[1], to[1], t) + noise1D(elapsed * 0.3 + 10) * NOISE_AMP
+        c = mix(from[2], to[2], t) + noise1D(elapsed * 0.3 + 20) * NOISE_AMP
+        d = mix(from[3], to[3], t) + noise1D(elapsed * 0.3 + 30) * NOISE_AMP
+
+        // Fade overlay
+        ctx.fillStyle = `rgba(9,9,9,${fadeA})`
         ctx.fillRect(0, 0, w, h)
 
+        // Scale & center from smooth bounds
+        const attrW = bMaxX - bMinX || 1
+        const attrH = bMaxY - bMinY || 1
+        const scale = Math.min(w * 0.55, h * 0.80) / Math.max(attrW, attrH)
+        const acx = (bMinX + bMaxX) / 2
+        const acy = (bMinY + bMaxY) / 2
+        const drawCx = w * 0.65
+        const drawCy = h * 0.50
+
+        // Draw batch with symmetry + track frame bounds
         ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
-        for (let i = 0; i < BATCH; i++) {
-          const nx = Math.sin(A * y) + C * Math.cos(A * x)
-          const ny = Math.sin(B * x) + D * Math.cos(B * y)
+        let fMinX = Infinity, fMaxX = -Infinity
+        let fMinY = Infinity, fMaxY = -Infinity
+
+        for (let i = 0; i < BASE_BATCH; i++) {
+          const nx = Math.sin(a * y) + c * Math.cos(a * x)
+          const ny = Math.sin(b * x) + d * Math.cos(b * y)
           x = nx; y = ny
-          ctx.fillRect((x * scale + cx) | 0, (y * scale + cy) | 0, 1, 1)
+
+          if (Math.abs(x) > 10 || Math.abs(y) > 10) { x = 0.1; y = 0.1; continue }
+
+          if (x < fMinX) fMinX = x; if (x > fMaxX) fMaxX = x
+          if (y < fMinY) fMinY = y; if (y > fMaxY) fMaxY = y
+
+          const px = (x - acx) * scale
+          const py = (y - acy) * scale
+
+          for (let k = 0; k < SYMMETRY; k++) {
+            ctx.fillRect(
+              (px * cosK[k] - py * sinK[k] + drawCx) | 0,
+              (px * sinK[k] + py * cosK[k] + drawCy) | 0,
+              1, 1,
+            )
+          }
+        }
+
+        // Smooth bounds for next frame
+        if (fMinX < fMaxX) {
+          bMinX = mix(bMinX, fMinX, BOUND_LERP)
+          bMaxX = mix(bMaxX, fMaxX, BOUND_LERP)
+          bMinY = mix(bMinY, fMinY, BOUND_LERP)
+          bMaxY = mix(bMaxY, fMaxY, BOUND_LERP)
         }
 
         state.raf = requestAnimationFrame(draw)
       }
 
-      draw()
+      state.raf = requestAnimationFrame(draw)
     }
 
     start()
-
     const ro = new ResizeObserver(start)
     ro.observe(canvas)
 
