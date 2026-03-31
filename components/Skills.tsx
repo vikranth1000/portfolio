@@ -33,7 +33,7 @@ export default function Skills() {
         {SKILL_GROUPS.map((group, i) => (
           <AnimateOnScroll key={group.label} delay={i * 0.06}>
             <div>
-              <p className="text-sm text-[#444] uppercase tracking-widest mb-3">
+              <p className="text-sm text-label uppercase tracking-widest mb-3">
                 {group.label}
               </p>
               <div className="flex flex-wrap gap-2">
