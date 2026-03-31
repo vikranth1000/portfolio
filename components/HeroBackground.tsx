@@ -13,9 +13,9 @@ const KEYFRAMES: [number, number, number, number][] = [
 
 const BATCH          = 6000    // points per frame
 const WARMUP         = 500
-const FADE_HOLD      = 0.030   // fade during keyframe hold
-const FADE_MORPH     = 0.015   // slower fade during transition → ghostly overlap
-const POINT_OPACITY  = 0.10    // per-point brightness
+const FADE_HOLD      = 0.06    // fade during keyframe hold — clears stray points in ~1s
+const FADE_MORPH     = 0.04    // fade during transition — old shape fades in ~2s
+const POINT_OPACITY  = 0.08    // per-point brightness — dense paths stay visible, background stays clean
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
