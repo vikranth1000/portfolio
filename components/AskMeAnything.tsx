@@ -66,6 +66,9 @@ function MascotIcon({ pupilOffset, isHovered }: MascotProps) {
   )
 }
 
+// Matches Tailwind's `md` breakpoint (768px)
+const MD_BREAKPOINT = '(max-width: 767px)'
+
 const WELCOME: Message = {
   role: 'assistant',
   content: "Hey! I'm an AI trained on Vikranth's background. Ask me about his projects, skills, or experience.",
@@ -98,6 +101,7 @@ export default function AskMeAnything() {
   const [loading, setLoading] = useState(false)
   const [pupilOffset, setPupilOffset] = useState({ x: 0, y: 0 })
   const [mascotHovered, setMascotHovered] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -109,6 +113,23 @@ export default function AskMeAnything() {
       y: Math.max(-1, Math.min(1, (e.clientY - rect.top  - r) / r)),
     })
   }
+
+  // Track mobile breakpoint — matches Tailwind's md (768px)
+  useEffect(() => {
+    const mq = window.matchMedia(MD_BREAKPOINT)
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  // Prevent body scroll when chat is open on mobile
+  useEffect(() => {
+    if (!isMobile) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = open ? 'hidden' : prev
+    return () => { document.body.style.overflow = prev }
+  }, [open, isMobile])
 
   // Seed welcome message on first open
   useEffect(() => {
@@ -162,16 +183,36 @@ export default function AskMeAnything() {
 
   return (
     <>
+      {/* Mobile backdrop */}
+      <AnimatePresence>
+        {open && isMobile && (
+          <motion.div
+            key="backdrop"
+            className="fixed inset-0 z-[9970] bg-black/60 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Chat panel */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-20 left-6 z-[9980] w-[320px] hidden md:flex flex-col bg-[#0a0a0a] border border-[#1f1f1f] rounded-xl shadow-2xl overflow-hidden"
+            initial={isMobile ? { opacity: 1, y: '100%' } : { opacity: 0, y: 8, scale: 0.97 }}
+            animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+            exit={isMobile ? { opacity: 1, y: '100%' } : { opacity: 0, y: 8, scale: 0.97 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-0 left-0 right-0 md:bottom-20 md:left-6 md:right-auto md:w-[320px] z-[9980] flex flex-col bg-[#0a0a0a] border border-[#1f1f1f] rounded-t-2xl md:rounded-xl shadow-2xl overflow-hidden h-[85dvh] md:h-auto"
           >
+            {/* Drag handle — mobile only */}
+            <div className="flex justify-center pt-2.5 pb-1 md:hidden">
+              <div className="w-9 h-1 rounded-full bg-[#2a2a2a]" />
+            </div>
+
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a1a1a] bg-[#0f0f0f]">
               <div className="flex items-center gap-2">
@@ -190,7 +231,7 @@ export default function AskMeAnything() {
             </div>
 
             {/* Messages */}
-            <div className="flex flex-col gap-3 p-4 h-72 overflow-y-auto">
+            <div className="flex flex-col gap-3 p-4 flex-1 md:flex-none md:h-72 overflow-y-auto">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <p
@@ -223,7 +264,11 @@ export default function AskMeAnything() {
             </div>
 
             {/* Input */}
-            <form onSubmit={sendMessage} className="flex items-center gap-2 px-3 py-3 border-t border-[#1a1a1a]">
+            <form
+              onSubmit={sendMessage}
+              className="flex items-center gap-2 px-3 pt-3 border-t border-[#1a1a1a]"
+              style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
+            >
               <input
                 ref={inputRef}
                 value={input}
@@ -257,7 +302,7 @@ export default function AskMeAnything() {
         onMouseMove={!open ? handleMascotMouseMove : undefined}
         onMouseEnter={() => { if (!open) setMascotHovered(true) }}
         onMouseLeave={() => { setPupilOffset({ x: 0, y: 0 }); setMascotHovered(false) }}
-        className="fixed bottom-6 left-6 z-[9980] hidden md:flex w-10 h-10 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] items-center justify-center text-[#555] hover:text-text-primary hover:border-border-hover transition-all"
+        className="fixed bottom-6 left-6 z-[9980] flex w-10 h-10 rounded-full bg-[#0f0f0f] border border-[#1f1f1f] items-center justify-center text-[#555] hover:text-text-primary hover:border-border-hover transition-all"
       >
         <AnimatePresence mode="wait">
           {open ? (
