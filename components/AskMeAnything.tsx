@@ -74,12 +74,22 @@ const WELCOME: Message = {
   content: "Hey! I'm an AI trained on Vikranth's background. Ask me about his projects, skills, or experience.",
 }
 
+const MAX_MESSAGES = 15
+const WARNING_THRESHOLD = 13
+
 function getRateLimit(): { count: number; date: string } {
   try {
     const stored = localStorage.getItem('ama_rl')
     if (!stored) return { count: 0, date: '' }
     return JSON.parse(stored)
   } catch { return { count: 0, date: '' } }
+}
+
+function getCurrentCount(): number {
+  const today = new Date().toDateString()
+  const rl = getRateLimit()
+  if (rl.date !== today) return 0
+  return rl.count
 }
 
 function checkAndIncrement(): boolean {
@@ -89,7 +99,7 @@ function checkAndIncrement(): boolean {
     localStorage.setItem('ama_rl', JSON.stringify({ count: 1, date: today }))
     return true
   }
-  if (rl.count >= 15) return false
+  if (rl.count >= MAX_MESSAGES) return false
   localStorage.setItem('ama_rl', JSON.stringify({ count: rl.count + 1, date: today }))
   return true
 }
@@ -102,6 +112,7 @@ export default function AskMeAnything() {
   const [pupilOffset, setPupilOffset] = useState({ x: 0, y: 0 })
   const [mascotHovered, setMascotHovered] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [messageCount, setMessageCount] = useState(0)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -134,7 +145,10 @@ export default function AskMeAnything() {
   // Seed welcome message on first open
   useEffect(() => {
     if (open && messages.length === 0) setMessages([WELCOME])
-    if (open) setTimeout(() => inputRef.current?.focus(), 80)
+    if (open) {
+      setMessageCount(getCurrentCount())
+      setTimeout(() => inputRef.current?.focus(), 80)
+    }
   }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -146,6 +160,8 @@ export default function AskMeAnything() {
     const text = input.trim()
     if (!text || loading) return
 
+    const currentCount = getCurrentCount()
+
     if (!checkAndIncrement()) {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -153,6 +169,20 @@ export default function AskMeAnything() {
       }])
       setInput('')
       return
+    }
+
+    // Update count after sending
+    setMessageCount(currentCount + 1)
+
+    // Show warning if approaching limit
+    if (currentCount + 1 === WARNING_THRESHOLD) {
+      const remaining = MAX_MESSAGES - WARNING_THRESHOLD
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `⚠️ You have ${remaining} messages remaining today.`,
+        }])
+      }, 100)
     }
 
     const userMsg: Message = { role: 'user', content: text }
@@ -218,6 +248,10 @@ export default function AskMeAnything() {
               <div className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent-green inline-block" />
                 <span className="text-xs font-mono text-[#666] tracking-wide">ask me anything</span>
+                <span className="text-xs font-mono text-[#444] tracking-wide">·</span>
+                <span className="text-xs font-mono text-[#444] tracking-wide">
+                  {messageCount}/{MAX_MESSAGES}
+                </span>
               </div>
               <button
                 onClick={() => setOpen(false)}
