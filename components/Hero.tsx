@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import HeroBackground from './HeroBackground'
 
@@ -14,6 +15,8 @@ const item = {
 }
 
 export default function Hero() {
+  const [attractorOpen, setAttractorOpen] = useState(false)
+
   return (
     <section className="relative min-h-screen">
       <HeroBackground />
@@ -87,10 +90,14 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Clifford attractor annotation — trigger always visible, card on hover */}
-      <div className="absolute bottom-16 right-6 z-10 group cursor-default select-none">
-        {/* Info card — floats above the trigger */}
-        <div className="absolute bottom-full right-0 mb-3 w-72 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none">
+      {/* Clifford attractor annotation — trigger always visible, card on hover/tap */}
+      <div className="absolute bottom-16 right-6 z-10 group select-none">
+        {/* Info card — floats above the trigger; visible on hover (desktop) or when opened (touch) */}
+        <div className={`absolute bottom-full right-0 mb-3 w-72 transition-all duration-300 ease-out pointer-events-auto ${
+          attractorOpen
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto'
+        }`}>
           <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4">
             <p className="text-sm font-semibold text-white/80 mb-2">Morphing Attractor</p>
             <p className="text-xs text-white/50 leading-relaxed mb-3">
@@ -104,10 +111,16 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Trigger label */}
-        <p className="text-xs font-mono tracking-wider text-white/25 group-hover:text-white/60 transition-colors duration-300 text-right">
-          Morphing Attractor
-        </p>
+        {/* Trigger label — ⓘ icon signals interactivity; opacity raised for legibility */}
+        <button
+          onClick={() => setAttractorOpen(v => !v)}
+          className="flex items-center gap-1.5 text-xs font-mono tracking-wider text-white/40 group-hover:text-white/60 transition-colors duration-300 cursor-pointer bg-transparent border-0 p-0"
+          aria-expanded={attractorOpen}
+          aria-label="Toggle Morphing Attractor information"
+        >
+          <span>Morphing Attractor</span>
+          <span aria-hidden="true" className="text-[0.65rem]">ⓘ</span>
+        </button>
       </div>
     </section>
   )
