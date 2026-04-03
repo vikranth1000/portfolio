@@ -10,6 +10,7 @@ import KeyboardHint from '@/components/KeyboardHint'
 import ScrollProgress from '@/components/ScrollProgress'
 import SmoothScroll from '@/components/SmoothScroll'
 import AskMeAnything from '@/components/AskMeAnything'
+import AttractorProvider from '@/components/AttractorProvider'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
@@ -70,17 +71,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SmoothScroll>
-          <ScrollProgress />
-          <CustomCursor />
-          <ConsoleMessage />
-          <KonamiCode />
-          <CommandPalette />
-          <KeyboardHint />
-          <AskMeAnything />
-          {children}
-          <SpeedInsights />
-        </SmoothScroll>
+        <AttractorProvider>
+          <SmoothScroll>
+            <ScrollProgress />
+            <CustomCursor />
+            <ConsoleMessage />
+            <KonamiCode />
+            <CommandPalette />
+            <KeyboardHint />
+            <AskMeAnything />
+            {children}
+            <SpeedInsights />
+          </SmoothScroll>
+        </AttractorProvider>
       </body>
     </html>
   )

@@ -1,49 +1,29 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import { useAttractor } from './AttractorProvider'
+import { mix, type EngineState } from '@/lib/attractor-engine'
 
-/* ── Keyframes: 6 curated (a,b,c,d) configs → visually distinct shapes ── */
-const KEYFRAMES: [number, number, number, number][] = [
-  [-1.4,   1.6,   1.0,   0.7 ],  // rose / flower
-  [-1.7,   1.3,  -0.1,  -1.2 ],  // butterfly
-  [-1.8,  -2.0,  -0.5,  -0.9 ],  // spiral nebula
-  [ 1.5,  -1.8,   1.6,   0.9 ],  // figure-8
-  [-1.2,  -1.9,   1.8,  -1.6 ],  // organic tendrils
-  [ 1.1,  -1.3,  -1.6,   1.5 ],  // compact core
-]
-
-const BATCH          = 6000    // points per frame
-const WARMUP         = 500
-const FADE           = 0.35    // very aggressive: stray dots gone in ~8 frames (0.13s)
-const POINT_OPACITY  = 0.40    // bright — dense paths glow white, equilibrium = opacity/fade
-const HOLD_S         = 12      // seconds at each keyframe
-const MORPH_S        = 8       // seconds transitioning between keyframes
-const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
-const NOISE_AMP      = 0.05    // organic drift layered on params
-const SAMPLE         = 5000    // initial bounding-box sampling iterations
-
-/* ── Utilities ── */
-
-function noise1D(t: number): number {
-  return Math.sin(t * 1.17 + 0.3) * 0.5
-       + Math.sin(t * 2.31 + 1.7) * 0.25
-       + Math.sin(t * 4.63 + 3.1) * 0.125
-}
-
-function ease(t: number): number { return t * t * (3 - 2 * t) }
-function mix(a: number, b: number, t: number): number { return a + (b - a) * t }
+const WARMUP      = 500
+const BASE_BATCH  = 4000
+const ENERGY_BATCH = 3000
+const FADE        = 0.35
+const POINT_OPACITY = 0.40
+const BOUND_LERP  = 0.008
+const SAMPLE      = 5000
+const GRAVITY_FALLOFF = 200 // px — radius of gravitational influence
 
 export default function HeroBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const engine = useAttractor()
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const canvas = canvasRef.current!
-    const state = { raf: 0, active: false }
+    const lifecycle = { active: false }
 
     function start() {
-      state.active = false
-      cancelAnimationFrame(state.raf)
+      lifecycle.active = false
 
       const dpr = window.devicePixelRatio || 1
       const w = canvas.offsetWidth
@@ -56,15 +36,14 @@ export default function HeroBackground() {
       ctx.scale(dpr, dpr)
       ctx.clearRect(0, 0, w, h)
 
-      // Init with first keyframe
-      const kf = KEYFRAMES[0]
-      let a = kf[0], b = kf[1], c = kf[2], d = kf[3]
+      // Init iteration state from current engine params
+      const initState = engine.getState()
+      let x = 0.1, y = 0.1
 
       // Warmup — converge onto attractor
-      let x = 0.1, y = 0.1
       for (let i = 0; i < WARMUP; i++) {
-        const nx = Math.sin(a * y) + c * Math.cos(a * x)
-        const ny = Math.sin(b * x) + d * Math.cos(b * y)
+        const nx = Math.sin(initState.a * y) + initState.c * Math.cos(initState.a * x)
+        const ny = Math.sin(initState.b * x) + initState.d * Math.cos(initState.b * y)
         x = nx; y = ny
       }
 
@@ -73,42 +52,36 @@ export default function HeroBackground() {
       let bMinY = Infinity, bMaxY = -Infinity
       let sx = x, sy = y
       for (let i = 0; i < SAMPLE; i++) {
-        const nx = Math.sin(a * sy) + c * Math.cos(a * sx)
-        const ny = Math.sin(b * sx) + d * Math.cos(b * sy)
+        const nx = Math.sin(initState.a * sy) + initState.c * Math.cos(initState.a * sx)
+        const ny = Math.sin(initState.b * sx) + initState.d * Math.cos(initState.b * sy)
         sx = nx; sy = ny
         if (sx < bMinX) bMinX = sx; if (sx > bMaxX) bMaxX = sx
         if (sy < bMinY) bMinY = sy; if (sy > bMaxY) bMaxY = sy
       }
 
-      const t0 = performance.now()
-      state.active = true
+      lifecycle.active = true
 
-      function draw(ts: number) {
-        if (!state.active) return
+      // Update orb's gravitational attractor point in normalized screen coords
+      // The orb is at bottom-6 left-6 (24px from edges), center of 48px button
+      engine.setAttractorPoint(48 / w, (h - 48) / h)
 
-        const elapsed = (ts - t0) / 1000
-        const cycle = HOLD_S + MORPH_S
-        const pos = elapsed % (cycle * KEYFRAMES.length)
-        const idx = Math.floor(pos / cycle)
-        const phase = pos % cycle
+      // ── Frame callback — called by the engine on every rAF ──
+      const onFrame = (state: EngineState) => {
+        if (!lifecycle.active) return
 
-        // Interpolation factor
-        let t = 0
-        if (phase >= HOLD_S) {
-          t = ease((phase - HOLD_S) / MORPH_S)
-        }
+        const { a, b, c, d, energy } = state
+        const batch = Math.round(BASE_BATCH + energy * ENERGY_BATCH)
 
-        // Interpolate params + organic noise
-        const from = KEYFRAMES[idx]
-        const to = KEYFRAMES[(idx + 1) % KEYFRAMES.length]
-        a = mix(from[0], to[0], t) + noise1D(elapsed * 0.3) * NOISE_AMP
-        b = mix(from[1], to[1], t) + noise1D(elapsed * 0.3 + 10) * NOISE_AMP
-        c = mix(from[2], to[2], t) + noise1D(elapsed * 0.3 + 20) * NOISE_AMP
-        d = mix(from[3], to[3], t) + noise1D(elapsed * 0.3 + 30) * NOISE_AMP
+        // Gravitational bias target in screen pixels
+        const grav = engine.attractorPoint
+        const gravX = grav.x * w
+        const gravY = grav.y * h
+        const gravStrength = 1.0 + energy * 0.5
 
-        // Fade: multiply all pixel alphas toward zero — no ghosts
+        // Fade existing pixels
         ctx.globalCompositeOperation = 'destination-in'
-        ctx.globalAlpha = 1 - FADE
+        const fadeFactor = FADE - energy * 0.15
+        ctx.globalAlpha = 1 - Math.max(0.05, fadeFactor)
         ctx.fillStyle = '#fff'
         ctx.fillRect(0, 0, w, h)
         ctx.globalCompositeOperation = 'source-over'
@@ -123,17 +96,16 @@ export default function HeroBackground() {
         const cx = w * 0.65 - acx * scale
         const cy = h * 0.50 - acy * scale
 
-        // Draw batch + track frame bounds
-        // Skip dots in the left text zone (no gradient needed — no banding possible)
-        const fadeStart = w * 0.30   // dots begin to appear here
-        const fadeFull  = w * 0.55   // dots at full opacity here
+        // Left text zone fade
+        const fadeStart = w * 0.30
+        const fadeFull  = w * 0.55
         const fadeRange = fadeFull - fadeStart
 
-        ctx.fillStyle = `rgba(255,255,255,${POINT_OPACITY})`
+        // Track frame bounds
         let fMinX = Infinity, fMaxX = -Infinity
         let fMinY = Infinity, fMaxY = -Infinity
 
-        for (let i = 0; i < BATCH; i++) {
+        for (let i = 0; i < batch; i++) {
           const nx = Math.sin(a * y) + c * Math.cos(a * x)
           const ny = Math.sin(b * x) + d * Math.cos(b * y)
           x = nx; y = ny
@@ -143,19 +115,34 @@ export default function HeroBackground() {
           if (x < fMinX) fMinX = x; if (x > fMaxX) fMaxX = x
           if (y < fMinY) fMinY = y; if (y > fMaxY) fMaxY = y
 
-          const sx = (x * scale + cx) | 0
-          const sy = (y * scale + cy) | 0
+          const px = (x * scale + cx) | 0
+          const py = (y * scale + cy) | 0
 
-          // Skip dots in text zone, fade in transition zone
-          if (sx < fadeStart) continue
-          if (sx < fadeFull) {
-            ctx.globalAlpha = (sx - fadeStart) / fadeRange
+          // Skip dots in text zone
+          if (px < fadeStart) continue
+
+          // Gravitational brightness bias — particles near the orb glow brighter
+          const gdx = px - gravX
+          const gdy = py - gravY
+          const gDist = Math.sqrt(gdx * gdx + gdy * gdy)
+          const gravBoost = 1 + gravStrength * 0.5 / (1 + (gDist / GRAVITY_FALLOFF) * (gDist / GRAVITY_FALLOFF))
+
+          const baseAlpha = POINT_OPACITY * (1 + energy * 0.5)
+          let alpha = baseAlpha * gravBoost
+
+          // Left zone fade
+          if (px < fadeFull) {
+            alpha *= (px - fadeStart) / fadeRange
           }
-          ctx.fillRect(sx, sy, 1, 1)
-          if (sx < fadeFull) {
-            ctx.globalAlpha = 1
-          }
+
+          ctx.globalAlpha = Math.min(1, alpha)
+          ctx.fillStyle = '#fff'
+          // Particles near the orb render slightly larger
+          const size = gravBoost > 1.15 ? 1.5 : 1
+          ctx.fillRect(px, py, size, size)
         }
+
+        ctx.globalAlpha = 1
 
         // Smooth bounds for next frame
         if (fMinX < fMaxX) {
@@ -165,28 +152,34 @@ export default function HeroBackground() {
           bMaxY = mix(bMaxY, fMaxY, BOUND_LERP)
         }
 
-        // Opaque background behind everything — uniform #090909, no artifacts
+        // Opaque background behind everything
         ctx.globalCompositeOperation = 'destination-over'
         ctx.fillStyle = '#090909'
         ctx.fillRect(0, 0, w, h)
         ctx.globalCompositeOperation = 'source-over'
-
-        state.raf = requestAnimationFrame(draw)
       }
 
-      state.raf = requestAnimationFrame(draw)
+      engine.subscribe(onFrame)
+
+      return () => {
+        lifecycle.active = false
+        engine.unsubscribe(onFrame)
+      }
     }
 
-    start()
-    const ro = new ResizeObserver(start)
+    const cleanup = start()
+    const ro = new ResizeObserver(() => {
+      cleanup?.()
+      start()
+    })
     ro.observe(canvas)
 
     return () => {
-      state.active = false
-      cancelAnimationFrame(state.raf)
+      lifecycle.active = false
+      cleanup?.()
       ro.disconnect()
     }
-  }, [])
+  }, [engine])
 
   return (
     <canvas
