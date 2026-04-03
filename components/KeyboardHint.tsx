@@ -29,10 +29,10 @@ export default function KeyboardHint() {
           transition={{ duration: 0.3, ease: 'easeOut' }}
           aria-hidden="true"
         >
-          <kbd className="text-xs text-[#666] border border-[#333] rounded px-1.5 py-0.5 font-mono bg-[#0f0f0f]">
+          <kbd className="text-xs text-text-hint border border-border-hover rounded px-1.5 py-0.5 font-mono bg-surface">
             /
           </kbd>
-          <span className="text-xs text-[#555] font-mono tracking-wide">
+          <span className="text-xs text-text-secondary font-mono tracking-wide">
             terminal
           </span>
         </motion.div>

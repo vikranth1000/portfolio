@@ -32,8 +32,8 @@ export default function Skills() {
       <div className="flex flex-col gap-8">
         {SKILL_GROUPS.map((group, i) => (
           <AnimateOnScroll key={group.label} delay={i * 0.06}>
-            <div>
-              <p className="text-sm text-label uppercase tracking-widest mb-3">
+            <div className="pl-4 border-l border-border-subtle">
+              <p className="text-sm text-text-label uppercase tracking-widest mb-3">
                 {group.label}
               </p>
               <div className="flex flex-wrap gap-2">

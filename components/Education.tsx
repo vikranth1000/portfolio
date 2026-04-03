@@ -22,7 +22,7 @@ export default function Education() {
               {['Machine Learning', 'Data Structures', 'Statistics', 'Linear Algebra', 'Deep Learning'].map((course) => (
                 <span
                   key={course}
-                  className="text-xs px-2 py-1 rounded bg-[#111] border border-border-subtle text-text-secondary"
+                  className="text-xs px-2 py-1 rounded bg-tag border border-border-subtle text-text-secondary"
                 >
                   {course}
                 </span>

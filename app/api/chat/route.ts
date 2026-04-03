@@ -47,26 +47,75 @@ Built with Next.js 14, TypeScript, Tailwind CSS, Framer Motion. Features an inte
 - Never fabricate information
 - Keep responses brief and direct`
 
+// Simple in-memory rate limiter (resets on redeploy)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT = 20
+const RATE_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return false
+  }
+  entry.count++
+  return entry.count > RATE_LIMIT
+}
+
+function getClientIP(req: NextRequest): string {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+}
+
 export async function POST(req: NextRequest) {
   if (!process.env.XAI_API_KEY) {
-    return Response.json({
-      content: "AI chat isn't configured yet. Reach out directly at vikranthreddimasu@gmail.com!",
-    })
+    return Response.json(
+      { content: "AI chat isn't configured yet. Reach out directly at vikranthreddimasu@gmail.com!" },
+      { status: 503 }
+    )
+  }
+
+  const ip = getClientIP(req)
+  if (isRateLimited(ip)) {
+    return Response.json(
+      { content: "Too many requests. Try again later or reach out at vikranthreddimasu@gmail.com" },
+      { status: 429 }
+    )
   }
 
   try {
-    const { messages } = await req.json()
+    const body = await req.json()
+    const { messages } = body
+
+    // Input validation
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return Response.json({ content: "Invalid request." }, { status: 400 })
+    }
+
+    const lastMessage = messages[messages.length - 1]
+    if (!lastMessage?.content || typeof lastMessage.content !== 'string' || lastMessage.content.length > 500) {
+      return Response.json({ content: "Message too long or invalid." }, { status: 400 })
+    }
+
+    // Sanitize: only pass role and content to the model
+    const sanitized = messages.map((m: { role: string; content: string }) => ({
+      role: m.role === 'assistant' ? 'assistant' as const : 'user' as const,
+      content: String(m.content).slice(0, 500),
+    }))
 
     const { text } = await generateText({
       model: xai('grok-3-mini-fast'),
       system: SYSTEM_PROMPT,
-      messages,
+      messages: sanitized,
       maxOutputTokens: 300,
     })
 
     return Response.json({ content: text })
   } catch (err) {
     console.error('Chat route error:', err)
-    return Response.json({ content: "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com" })
+    return Response.json(
+      { content: "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com" },
+      { status: 500 }
+    )
   }
 }

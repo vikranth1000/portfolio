@@ -30,6 +30,12 @@ export default function Nav() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
 
+  // Scroll lock for mobile menu
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
   const handleNavClick = (href: string) => {
     setMenuOpen(false)
     lenis?.scrollTo(href, { offset: -20 })

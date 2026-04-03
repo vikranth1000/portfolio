@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 
 const SEQUENCE = ['ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight']
 const DOT_COUNT = 8
@@ -23,14 +23,15 @@ function PacMan() {
 
   return (
     <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
-      <circle cx={cx} cy={cy} r={r} fill="#FACC15" />
-      <path d={`M${cx},${cy} L${tx},${ty} A${r},${r},0,0,1,${bx},${by} Z`} fill="#090909" />
-      <circle cx={cx - 4} cy={cy - 8} r={3} fill="#090909" />
+      <circle cx={cx} cy={cy} r={r} className="fill-accent-pacman" />
+      <path d={`M${cx},${cy} L${tx},${ty} A${r},${r},0,0,1,${bx},${by} Z`} className="fill-base" />
+      <circle cx={cx - 4} cy={cy - 8} r={3} className="fill-base" />
     </svg>
   )
 }
 
 export default function KonamiCode() {
+  const prefersReducedMotion = useReducedMotion()
   const [active, setActive] = useState(false)
   const [runId, setRunId] = useState(0)
   const [dotDelays, setDotDelays] = useState<number[]>([])
@@ -74,6 +75,9 @@ export default function KonamiCode() {
     return () => window.removeEventListener('keydown', handleKey)
   }, [progress])
 
+  // Skip animation entirely when user prefers reduced motion
+  if (prefersReducedMotion) return null
+
   return (
     <>
       {/* Dots: fixed on screen — Pac-Man travels through them */}
@@ -81,7 +85,7 @@ export default function KonamiCode() {
         {active && dotDelays.map((delay, i) => (
           <motion.div
             key={`dot-${runId}-${i}`}
-            className="fixed z-[9997] pointer-events-none w-2 h-2 rounded-full bg-[#FACC15]"
+            className="fixed z-[9995] pointer-events-none w-2 h-2 rounded-full bg-accent-pacman"
             style={{
               left: `${(i + 1) * 10}vw`,
               top: '48%',
@@ -101,7 +105,7 @@ export default function KonamiCode() {
         {active && (
           <motion.div
             key={`pacman-${runId}`}
-            className="fixed z-[9998] pointer-events-none"
+            className="fixed z-[9996] pointer-events-none"
             style={{ top: 'calc(48% - 24px)', left: -60 }}
             initial={{ x: 0 }}
             animate={{ x: 'calc(100vw + 120px)' }}

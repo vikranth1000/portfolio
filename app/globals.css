@@ -19,9 +19,18 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 
+/* Hide native scrollbar globally */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
 body {
-  background-color: #090909;
-  color: #ffffff;
+  background-color: theme('colors.base');
+  color: theme('colors.text-primary');
   cursor: none;
 }
 
@@ -36,7 +45,7 @@ body {
 .cursor-dot {
   width: 10px;
   height: 10px;
-  background: #ffffff;
+  background: theme('colors.text-primary');
   border-radius: 50%;
   position: fixed;
   top: 0;
@@ -52,6 +61,17 @@ body {
   width: 20px;
   height: 20px;
   opacity: 0.6;
+}
+
+/* Focus-visible — keyboard-only ring, invisible to mouse users */
+:focus-visible {
+  outline: 2px solid theme('colors.accent-green');
+  outline-offset: 2px;
+}
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px theme('colors.accent-green');
 }
 
 /* Disable all animations for users who prefer reduced motion */

@@ -17,7 +17,7 @@ export default function HomePage() {
         <Education />
         <About />
         <Contact />
-        <footer className="max-w-5xl mx-auto px-6 py-8 border-t border-border-subtle mt-8">
+        <footer className="max-w-5xl mx-auto px-6 py-16 border-t border-border-subtle mt-16">
           <div className="flex items-center justify-between">
             <p className="text-xs text-text-muted">
               © {new Date().getFullYear()} Vikranth Reddimasu

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useLenis } from 'lenis/react'
 import HeroBackground from './HeroBackground'
 
@@ -14,20 +14,25 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 }
 
+const noMotion = { hidden: {}, visible: {} }
+
 export default function Hero() {
   const lenis = useLenis()
+  const prefersReducedMotion = useReducedMotion()
+  const c = prefersReducedMotion ? noMotion : container
+  const it = prefersReducedMotion ? noMotion : item
   return (
     <section className="relative min-h-screen">
       <HeroBackground />
       <div className="relative z-10 flex flex-col justify-center min-h-screen max-w-5xl mx-auto px-6 pt-14">
         <motion.div
-          variants={container}
+          variants={c}
           initial="hidden"
           animate="visible"
           className="flex flex-col gap-6"
         >
           {/* Availability + AI-readable badges */}
-          <motion.div variants={item} className="flex items-center gap-2 flex-wrap">
+          <motion.div variants={it} className="flex items-center gap-2 flex-wrap">
             <span className="inline-flex items-center gap-2 bg-surface border border-border-subtle rounded-full px-3 py-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-green inline-block" />
               <span className="text-xs text-text-secondary tracking-widest uppercase">
@@ -51,7 +56,7 @@ export default function Hero() {
 
           {/* Name */}
           <motion.h1
-            variants={item}
+            variants={it}
             className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-none text-text-primary"
           >
             Vikranth
@@ -61,17 +66,17 @@ export default function Hero() {
 
           {/* Tagline */}
           <motion.p
-            variants={item}
+            variants={it}
             className="text-text-secondary text-lg md:text-xl max-w-md leading-relaxed"
           >
             ML Engineer building AI systems that scale.
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={item} className="flex items-center gap-3 flex-wrap">
+          <motion.div variants={it} className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => lenis?.scrollTo('#projects', { offset: -20 })}
-              className="bg-text-primary text-[#090909] px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-white/90 transition-colors"
+              className="bg-text-primary text-base px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-white/90 transition-colors"
             >
               View Work
             </button>
@@ -91,7 +96,7 @@ export default function Hero() {
       <div className="absolute bottom-16 right-6 z-10 group cursor-default select-none">
         {/* Info card — floats above the trigger */}
         <div className="absolute bottom-full right-0 mb-3 w-72 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 ease-out pointer-events-none">
-          <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4">
+          <div className="bg-surface-alt border border-white/10 rounded-lg p-4">
             <p className="text-sm font-semibold text-white/80 mb-2">Morphing Attractor</p>
             <p className="text-xs text-white/50 leading-relaxed mb-3">
               A Clifford strange attractor whose parameters slowly morph through six configurations. Old shapes dissolve as new ones crystallize.

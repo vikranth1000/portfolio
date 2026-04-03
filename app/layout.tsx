@@ -15,10 +15,19 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 export const metadata: Metadata = {
   title: 'Vikranth Reddimasu — ML Engineer',
   description: 'ML Engineer building AI systems that scale. Portfolio of Vikranth Reddimasu.',
+  metadataBase: new URL('https://vikranthreddimasu.xyz'),
   openGraph: {
     title: 'Vikranth Reddimasu — ML Engineer',
     description: 'ML Engineer building AI systems that scale.',
     type: 'website',
+    url: 'https://vikranthreddimasu.xyz',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Vikranth Reddimasu — ML Engineer' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Vikranth Reddimasu — ML Engineer',
+    description: 'ML Engineer building AI systems that scale.',
+    images: ['/og.png'],
   },
   alternates: {
     types: {
