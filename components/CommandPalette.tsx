@@ -333,9 +333,9 @@ export default function CommandPalette() {
                               ['Status', 'open to work ●',          true ],
                             ] as [string, string, boolean][]).map(([k, v, accent]) => (
                               <p key={k} className="flex">
-                                <span className="text-text-tertiary w-16 shrink-0">{k}</span>
+                                <span className="text-text-secondary w-16 shrink-0">{k}</span>
                                 <span className="text-text-muted mr-2">:</span>
-                                <span className={accent ? 'text-accent-green' : 'text-text-tertiary'}>{v}</span>
+                                <span className={accent ? 'text-accent-green' : 'text-text-secondary'}>{v}</span>
                               </p>
                             ))}
                           </div>
