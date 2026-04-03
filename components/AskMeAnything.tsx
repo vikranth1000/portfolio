@@ -167,10 +167,18 @@ export default function AskMeAnything() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [...messages, userMsg] }),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: data?.content || "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com",
+        }])
+        return
+      }
       const data = await res.json()
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: data.content || data.error || "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com",
+        content: data.content || "Something went wrong. Try reaching out at vikranthreddimasu@gmail.com",
       }])
     } catch {
       setMessages(prev => [...prev, {
