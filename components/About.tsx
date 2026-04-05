@@ -10,15 +10,13 @@ export default function About() {
       <div className="max-w-2xl flex flex-col gap-5">
         <AnimateOnScroll delay={0.05}>
           <p className="text-text-secondary leading-relaxed">
-            [Write why you love ML and AI — what drew you to the field, what excites you about
-            where it&apos;s going. Keep it personal and direct, not a résumé summary.]
+            I&apos;m an AI/ML Engineer and full-stack developer pursuing an M.S. in Data Science at the University of Maryland. I build production-grade agentic AI systems, generative AI applications, and data-driven platforms — from multi-agent architectures and conversational AI to end-to-end applications using Python, LangGraph, FastAPI, and React.
           </p>
         </AnimateOnScroll>
 
         <AnimateOnScroll delay={0.1}>
           <p className="text-text-secondary leading-relaxed">
-            [Write your career goal — the kind of problems you want to work on, the type of team
-            or company you&apos;re drawn to. Be specific enough to be credible.]
+            I&apos;m passionate about applying emerging AI technologies to solve real-world problems — particularly in wealth management and financial services. I&apos;m drawn to teams building innovative, client-centric solutions where I can design and deploy systems that actually ship to production.
           </p>
         </AnimateOnScroll>
       </div>

@@ -4,6 +4,11 @@
 .worktrees/
 .superpowers/
 
+# tool configs
+.cursor/
+.agents/
+skills-lock.json
+
 # dependencies
 /node_modules
 /.pnp

@@ -13,13 +13,14 @@ export default function Education() {
           <div className="bg-surface border border-border-subtle rounded-lg p-6">
             <div className="flex items-start justify-between mb-1">
               <h3 className="text-base font-semibold text-text-primary">
-                B.S. in [Your Major]
+                M.S. in Data Science
               </h3>
-              <span className="text-xs text-text-muted flex-shrink-0 ml-4">2021 — 2025</span>
+              <span className="text-xs text-text-muted flex-shrink-0 ml-4">2024 — 2026</span>
             </div>
-            <p className="text-sm text-text-secondary mb-4">[Your University]</p>
+            <p className="text-sm text-text-secondary mb-1">University of Maryland — College Park</p>
+            <p className="text-xs text-text-muted mb-4">GPA: 3.85</p>
             <div className="flex flex-wrap gap-2">
-              {['Machine Learning', 'Data Structures', 'Statistics', 'Linear Algebra', 'Deep Learning'].map((course) => (
+              {['Deep Learning', 'Advanced Machine Learning', 'Natural Language Processing'].map((course) => (
                 <span
                   key={course}
                   className="text-xs px-2 py-1 rounded bg-tag border border-border-subtle text-text-secondary"
@@ -35,11 +36,11 @@ export default function Education() {
         <AnimateOnScroll delay={0.1}>
           <div className="bg-surface border border-border-subtle rounded-lg p-6">
             <div className="flex items-start justify-between mb-1">
-              <h3 className="text-base font-semibold text-text-primary">UIF Fellow</h3>
+              <h3 className="text-base font-semibold text-text-primary">University Innovation Fellow</h3>
               <span className="text-xs text-text-muted flex-shrink-0 ml-4">2023 — 2024</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">
-              [Describe your UIFellow role — what you led, what you built, the impact you had on the program or your team.]
+              Hosted Design Thinking workshops at multiple universities, impacting over 5,000 students. Invited to Stanford University for the Silicon Valley Meet-up of University Innovation Fellows. Served as Editorial Board Member of Stanford UIF&apos;s Change Forward Journal 3rd edition.
             </p>
           </div>
         </AnimateOnScroll>
@@ -50,9 +51,9 @@ export default function Education() {
             <h3 className="text-base font-semibold text-text-primary mb-3">Activities</h3>
             <ul className="flex flex-col gap-2">
               {[
-                '[Activity or honor 1]',
-                '[Activity or honor 2]',
-                '[Activity or honor 3]',
+                'Co-Founded Young Web Solutions — a student-led startup providing web development and UI/UX design services',
+                'Stanford University Innovation Fellows program — invited to Silicon Valley Meet-up (March 2023)',
+                'Editorial Board Member — Stanford UIF Change Forward Journal, 3rd edition',
               ].map((activity) => (
                 <li key={activity} className="text-sm text-text-secondary flex items-start gap-2">
                   <span className="text-text-muted mt-0.5 flex-shrink-0">—</span>

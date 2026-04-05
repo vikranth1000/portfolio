@@ -1,0 +1,25 @@
+---
+title: "Offline Notebook LM"
+description: "Offline-first RAG assistant with vector intelligence and LLM orchestration for local document querying."
+techStack: ["Python", "Electron", "React", "FastAPI", "ChromaDB", "sentence-transformers"]
+githubUrl: "https://github.com/vikranthreddimasu/offline-notebook-lm"
+order: 3
+---
+
+## Problem Statement
+
+Cloud-dependent AI assistants can't be used in air-gapped or privacy-sensitive environments. The challenge: build an offline-first RAG application that supports local document ingestion, embedding generation, and LLM-powered retrieval without any cloud dependency.
+
+## Technical Approach
+
+- **Agentic retrieval workflow** where a routing agent classifies query intent to invoke either summary-level or chunk-level search across a 2-stage pipeline
+- **Intelligent LLM backend selection** that benchmarks model performance on domain-specific queries and applies knowledge distillation to compress larger model outputs into efficient Phi-3 and Mistral inference pipelines
+- **Multi-format document ingestion** supporting 7+ file types with adaptive chunking strategies, sentence-transformers embeddings, and ChromaDB vector storage
+
+Built with Electron + React + FastAPI + Python, backed by a PGVector-compatible ChromaDB vector store.
+
+## Results
+
+- 2-3x faster query times with reduced memory overhead versus naive retrieval
+- ~366 chunks/second ingestion throughput with consistent retrieval accuracy
+- Fully offline — no cloud dependency required for any feature

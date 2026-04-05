@@ -1,0 +1,24 @@
+---
+title: "Distributed ML Training for Apple Silicon"
+description: "Data-parallel PyTorch training framework across up to 18 Apple Silicon Macs via Thunderbolt 4."
+techStack: ["Python", "PyTorch", "Distributed Training", "Thunderbolt 4", "Docker"]
+githubUrl: "https://github.com/vikranthreddimasu/distributed-ml-apple-silicon"
+order: 2
+---
+
+## Problem Statement
+
+Apple Silicon Macs have powerful GPU cores but lack native support for distributed ML training across multiple machines. The challenge: enable data-parallel PyTorch training across a cluster of heterogeneous Apple Silicon Macs connected via Thunderbolt 4, respecting bandwidth constraints.
+
+## Technical Approach
+
+- **Automatic workload balancing** based on each node's GPU core count and memory capacity
+- **Gradient compression pipeline** using Top-K sparsification + FP16, achieving ~20x bandwidth reduction within Thunderbolt's bandwidth constraint
+- **WeightedDistributedSampler** that splits training data proportional to each node's compute capacity, maximizing cluster utilization and preventing bottlenecks on lower-powered nodes
+- **End-to-end training infrastructure** including checkpoint management, gradient accumulation for simulating larger batch sizes, and containerized dependencies
+
+## Results
+
+- Scales to 18 Apple Silicon Macs via Thunderbolt 4 interconnect
+- ~20x bandwidth reduction through intelligent gradient compression
+- Production-grade DevOps with containerized dependencies and checkpoint management

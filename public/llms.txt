@@ -1,10 +1,10 @@
 # Vikranth Reddimasu
 
-> ML Engineer building AI systems that scale. Open to work.
+> AI/ML Engineer building production-grade agentic AI systems. Open to work.
 
 ## About
 
-Vikranth Reddimasu is an ML Engineer and Data Scientist specializing in deep learning, reinforcement learning, and production AI systems. He builds scalable ML pipelines and AI-powered applications with a focus on practical, measurable impact.
+Vikranth Reddimasu is an AI/ML Engineer and full-stack developer pursuing an M.S. in Data Science at the University of Maryland, College Park. He builds production-grade agentic AI systems, generative AI applications, and data-driven platforms using Python, LangGraph, FastAPI, and React.
 
 ## Contact
 
@@ -16,33 +16,56 @@ Vikranth Reddimasu is an ML Engineer and Data Scientist specializing in deep lea
 
 ## Projects
 
+### WealthAgent: Multi-Agent AI for Financial Analytics
+Production-grade multi-agent AI system using LangGraph and Anthropic Claude, orchestrating 3 specialized agents for financial analytics and TCA. Full-stack with FastAPI, React, PostgreSQL, Docker. 85%+ test coverage.
+
+- Tech: Python, LangGraph, Anthropic Claude, FastAPI, React, PostgreSQL, Docker
+- GitHub: https://github.com/vikranthreddimasu/wealthagent
+
+### Distributed ML Training for Apple Silicon
+Data-parallel PyTorch training framework across up to 18 Apple Silicon Macs via Thunderbolt 4 with ~20x bandwidth reduction through gradient compression.
+
+- Tech: Python, PyTorch, Distributed Training, Thunderbolt 4, Docker
+- GitHub: https://github.com/vikranthreddimasu/distributed-ml-apple-silicon
+
+### Offline Notebook LM
+Offline-first RAG assistant with agentic retrieval, vector intelligence, and LLM orchestration. Supports 7+ file types, ~366 chunks/sec throughput.
+
+- Tech: Python, Electron, React, FastAPI, ChromaDB, sentence-transformers
+- GitHub: https://github.com/vikranthreddimasu/offline-notebook-lm
+
+### Production-Ready GAN for MNIST Synthesis
+GAN with 1.49M+ generator parameters deployed to HuggingFace Spaces with CI/CD and live interactive demo.
+
+- Tech: Python, PyTorch, Gradio, HuggingFace Spaces, Docker
+- GitHub: https://github.com/vikranthreddimasu/gan-mnist
+
 ### Pac-Man AI
-Five DQN (Deep Q-Network) agent variants trained to play Pac-Man using deep reinforcement learning. Implements and compares Vanilla DQN, Double DQN, Dueling DQN, DQN with Prioritized Experience Replay, and Rainbow DQN architectures.
+Five DQN agent variants trained to play Pac-Man using deep reinforcement learning. Rainbow DQN achieved human-comparable performance.
 
 - Tech: Python, PyTorch, NumPy, OpenCV
 - GitHub: https://github.com/vikranthreddimasu/pacman-ai
-- Tags: Reinforcement Learning, Deep Learning, PyTorch
 
 ## Skills
 
-### Machine Learning & AI
-PyTorch, TensorFlow, scikit-learn, HuggingFace Transformers, LangChain, OpenAI API, Reinforcement Learning, Computer Vision, Natural Language Processing
+### AI & ML
+Generative AI, Agentic AI, LLMs (Claude, OpenAI, Llama), RAG, Text2SQL, LLM Fine-tuning & Distillation, Distributed Training (DDP, DeepSpeed), Transformers, NLP
 
-### Programming Languages
-Python, SQL, TypeScript, R, Bash
+### Frameworks
+LangGraph, LangChain, LlamaIndex, PyTorch, TensorFlow, FastAPI, React, Pydantic, WebSockets
 
-### Data Engineering
-Pandas, NumPy, Apache Spark, Polars, Jupyter, dbt
+### Languages
+Python, SQL, R, TypeScript, Bash
 
-### Frontend & Web
-React, Next.js, Tailwind CSS, Framer Motion, TypeScript
+### Databases & Cloud
+PostgreSQL, ChromaDB, PGVector, Docker, CI/CD, GitHub Actions, HuggingFace Spaces
 
-### Cloud & MLOps
-AWS, Docker, Git, MLflow, Weights & Biases, FastAPI
+### Data & Visualization
+Pandas, NumPy, Plotly, Streamlit, Jupyter, yfinance
 
 ## Status
 
-Currently open to ML Engineer, Data Scientist, and AI Engineer roles.
+Currently pursuing M.S. in Data Science (GPA: 3.85) at University of Maryland. Open to ML Engineer, Data Scientist, and AI Engineer roles.
 
 ## Links
 

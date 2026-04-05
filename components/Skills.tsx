@@ -2,24 +2,24 @@ import AnimateOnScroll from './AnimateOnScroll'
 
 const SKILL_GROUPS = [
   {
-    label: 'ML / AI',
-    skills: ['PyTorch', 'TensorFlow', 'scikit-learn', 'HuggingFace', 'LangChain', 'OpenAI API', 'Reinforcement Learning', 'Computer Vision', 'NLP'],
+    label: 'AI & ML',
+    skills: ['Generative AI', 'Agentic AI', 'LLMs (Claude, OpenAI, Llama)', 'RAG', 'Text2SQL', 'LLM Fine-tuning & Distillation', 'Distributed Training (DDP, DeepSpeed)', 'Transformers', 'NLP'],
+  },
+  {
+    label: 'Frameworks',
+    skills: ['LangGraph', 'LangChain', 'LlamaIndex', 'PyTorch', 'TensorFlow', 'FastAPI', 'React', 'Pydantic', 'WebSockets'],
   },
   {
     label: 'Languages',
-    skills: ['Python', 'SQL', 'TypeScript', 'R', 'Bash'],
+    skills: ['Python', 'SQL', 'R', 'TypeScript', 'Bash'],
   },
   {
-    label: 'Data',
-    skills: ['Pandas', 'NumPy', 'Spark', 'Polars', 'Jupyter', 'dbt'],
+    label: 'Databases & Cloud',
+    skills: ['PostgreSQL', 'ChromaDB', 'PGVector', 'Docker', 'CI/CD', 'GitHub Actions', 'HuggingFace Spaces'],
   },
   {
-    label: 'Frontend',
-    skills: ['React', 'Next.js', 'Tailwind CSS', 'Framer Motion', 'TypeScript'],
-  },
-  {
-    label: 'Cloud / MLOps',
-    skills: ['AWS', 'Docker', 'Git', 'MLflow', 'Weights & Biases', 'FastAPI'],
+    label: 'Data & Visualization',
+    skills: ['Pandas', 'NumPy', 'Plotly', 'Streamlit', 'Jupyter', 'yfinance'],
   },
 ]
 

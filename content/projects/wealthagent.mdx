@@ -1,0 +1,27 @@
+---
+title: "WealthAgent: Multi-Agent AI for Financial Analytics"
+description: "Production-grade multi-agent AI system using LangGraph and Claude for financial analytics and TCA."
+techStack: ["Python", "LangGraph", "Anthropic Claude", "FastAPI", "React", "PostgreSQL", "Docker"]
+githubUrl: "https://github.com/vikranthreddimasu/wealthagent"
+order: 1
+---
+
+## Problem Statement
+
+Financial professionals need real-time advisory responses across portfolio management and trade analytics workflows, but existing tools lack conversational intelligence and multi-domain coverage. The challenge: build a system that can route diverse financial queries to specialized agents and deliver actionable insights.
+
+## Technical Approach
+
+Engineered a multi-agent AI system using LangGraph and Anthropic Claude, orchestrating 3 specialized agents with LLM-based intent classification:
+
+- **TCA Module** — computes execution quality metrics including slippage, market impact, and VWAP deviation on historical trade data
+- **ML Recommendation Engine** — identifies optimal counterparty and algorithm execution strategies by analyzing historical trade performance and market conditions
+- **Text2SQL Interface** — converts natural language queries into structured PostgreSQL commands using LLM function calling with schema-aware prompting
+
+Real-time WebSocket-based token streaming with live agent status indicators and persistent chat history.
+
+## Results
+
+- Full-stack application with 12+ REST endpoints and Pydantic v2 validation at all API boundaries
+- 85%+ test coverage across a 64-test pytest suite covering TCA computations and multi-agent orchestration
+- End-to-end pre-trade and post-trade decision augmentation pipeline
