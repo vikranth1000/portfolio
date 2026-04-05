@@ -177,7 +177,8 @@ export default function HeroBackground() {
       state.raf = requestAnimationFrame(draw)
     }
 
-    start()
+    // Defer to next frame so the browser has completed layout (canvas has dimensions)
+    requestAnimationFrame(start)
     const ro = new ResizeObserver(start)
     ro.observe(canvas)
 
