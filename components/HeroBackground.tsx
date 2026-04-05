@@ -11,10 +11,10 @@ const KEYFRAMES: [number, number, number, number][] = [
   [ 1.1,  -1.3,  -1.6,   1.5 ],  // compact core
 ]
 
-const BATCH          = 12000   // points per frame (dense enough for retina)
+const BATCH          = 8000    // points per frame
 const WARMUP         = 500
-const FADE           = 0.15    // gentle: points persist ~20 frames → luminous trails
-const POINT_OPACITY  = 0.30    // slightly lower to balance longer persistence
+const FADE           = 0.20    // moderate persistence (~15 frames visible)
+const POINT_OPACITY  = 0.35    // balanced brightness
 const HOLD_S         = 12      // seconds at each keyframe
 const MORPH_S        = 8       // seconds transitioning between keyframes
 const BOUND_LERP     = 0.008   // smooth bounding-box adaptation rate
