@@ -1,6 +1,6 @@
 # Vikranth Reddimasu — Extended Profile
 
-> ML Engineer building AI systems that scale. Open to work.
+> AI/ML Engineer building production-grade agentic AI systems. Open to work.
 
 This document provides extended context for AI assistants, agents, and LLMs researching Vikranth Reddimasu.
 Summary version: https://vikranthreddimasu.xyz/llms.txt
@@ -8,7 +8,7 @@ Summary version: https://vikranthreddimasu.xyz/llms.txt
 ## Identity
 
 - Name: Vikranth Reddimasu
-- Role: ML Engineer / Data Scientist / AI Engineer
+- Role: AI/ML Engineer / Data Scientist / Full-Stack Developer
 - Email: vikranthreddimasu@gmail.com
 - GitHub: https://github.com/vikranthreddimasu
 - LinkedIn: https://linkedin.com/in/vikranthreddimasu
@@ -16,55 +16,108 @@ Summary version: https://vikranthreddimasu.xyz/llms.txt
 - Resume: https://vikranthreddimasu.xyz/resume.pdf
 - Status: Open to work
 
+## Education
+
+- M.S. in Data Science, University of Maryland — College Park (Aug 2024 — May 2026)
+- GPA: 3.85
+- Coursework: Deep Learning, Advanced Machine Learning, Natural Language Processing
+
 ## Projects
+
+### WealthAgent: Multi-Agent AI for Financial Analytics & TCA
+- URL: https://vikranthreddimasu.xyz/projects/wealthagent
+- GitHub: https://github.com/vikranthreddimasu/wealthagent
+- Description: Production-grade multi-agent AI system using LangGraph and Anthropic Claude for financial analytics
+- Stack: Python, LangGraph, Anthropic Claude, FastAPI, React, PostgreSQL, Docker
+- Key work:
+  - Orchestrating 3 specialized agents with LLM-based intent classification for portfolio management and trade analytics
+  - TCA module computing slippage, market impact, and VWAP deviation with ML-based counterparty and algorithm recommendation
+  - Real-time WebSocket token streaming with live agent status and Text2SQL interface using schema-aware prompting
+  - 12+ REST endpoints, Pydantic v2 validation, 85%+ test coverage across 64-test pytest suite
+- Tags: Agentic AI, LangGraph, Financial Analytics, Multi-Agent Systems
+
+### Distributed ML Training Framework for Apple Silicon
+- URL: https://vikranthreddimasu.xyz/projects/distributed-ml
+- GitHub: https://github.com/vikranthreddimasu/distributed-ml-apple-silicon
+- Description: Data-parallel PyTorch training across up to 18 Apple Silicon Macs via Thunderbolt 4
+- Stack: Python, PyTorch, Distributed Training, Thunderbolt 4, Docker
+- Key work:
+  - Automatic workload balancing based on GPU core count and memory
+  - Top-K sparsification + FP16 gradient compression achieving ~20x bandwidth reduction
+  - WeightedDistributedSampler for proportional data splitting across heterogeneous nodes
+  - Checkpoint management, gradient accumulation, containerized dependencies
+- Tags: Distributed Training, PyTorch, Apple Silicon, Systems Engineering
+
+### Offline Notebook LM: RAG Assistant
+- URL: https://vikranthreddimasu.xyz/projects/offline-notebook-lm
+- GitHub: https://github.com/vikranthreddimasu/offline-notebook-lm
+- Description: Offline-first RAG application with agentic retrieval and LLM orchestration
+- Stack: Python, Electron, React, FastAPI, ChromaDB, sentence-transformers
+- Key work:
+  - Agentic retrieval with routing agent for summary-level vs chunk-level search (2-3x faster)
+  - Intelligent LLM backend selection with knowledge distillation for Phi-3 and Mistral
+  - Multi-format document ingestion (7+ file types), ~366 chunks/sec throughput
+  - Fully offline — no cloud dependency
+- Tags: RAG, Vector Search, LLM Orchestration, Offline-First
+
+### Production-Ready GAN for MNIST Synthesis
+- URL: https://vikranthreddimasu.xyz/projects/gan-mnist
+- GitHub: https://github.com/vikranthreddimasu/gan-mnist
+- Description: GAN with 1.49M+ generator parameters deployed to HuggingFace Spaces
+- Stack: Python, PyTorch, Gradio, HuggingFace Spaces, Docker
+- Key work:
+  - 1.49M+ generator and 1.46M+ discriminator parameters
+  - LeakyReLU and Batch Normalization for training stability
+  - Production Gradio web app with error handling, structured logging, type hints
+  - CI/CD deployment to HuggingFace Spaces
+- Tags: GAN, Generative AI, PyTorch, MLOps
 
 ### Pac-Man AI
 - URL: https://vikranthreddimasu.xyz/projects/pacman-ai
 - GitHub: https://github.com/vikranthreddimasu/pacman-ai
-- Description: Trained five competing DQN agent variants to play Pac-Man using deep reinforcement learning
+- Description: Five DQN agent variants trained to play Pac-Man using deep reinforcement learning
 - Stack: Python, PyTorch, NumPy, OpenCV
 - Key work:
-  - Implemented five DQN variants: Vanilla DQN, Double DQN, Dueling DQN, Prioritized Experience Replay (PER), Rainbow DQN
-  - Built a custom Pac-Man game engine with a headless simulation mode for fast training
-  - Designed observation spaces, reward shaping, and replay buffers from scratch
-  - Evaluated agents head-to-head across multiple metrics (score, survival time, ghost avoidance)
+  - Vanilla DQN, Double DQN, Dueling DQN, Prioritized Experience Replay, Rainbow DQN
+  - Custom Pac-Man game engine with headless simulation mode
+  - Rainbow achieved human-comparable performance after 2M training steps
 - Tags: Reinforcement Learning, Deep Learning, PyTorch, Game AI, DQN
 
 ## Skills — Detailed
 
-### Machine Learning & AI
-- Deep Learning frameworks: PyTorch (primary), TensorFlow
-- Classical ML: scikit-learn, gradient boosting, SVMs, ensemble methods
-- NLP: HuggingFace Transformers, BERT fine-tuning, LLM prompt engineering
-- LLM tooling: LangChain, OpenAI API, Anthropic API
+### AI & ML
+- Generative AI, Agentic AI, Large Language Models (Claude, OpenAI, Llama)
+- RAG, Text2SQL, LLM Fine-tuning & Distillation
+- Distributed Training (DDP, DeepSpeed)
+- Neural Network Architecture, Transformers, NLP
 - Reinforcement Learning: DQN variants, policy gradients, reward shaping
-- Computer Vision: OpenCV, image classification, object detection
 
-### Data Engineering
-- Data manipulation: Pandas, NumPy, Polars
-- Distributed compute: Apache Spark
-- Workflow: dbt, Jupyter notebooks
-- Experiment tracking: MLflow, Weights & Biases
+### Frameworks
+- LangGraph, LangChain, LlamaIndex
+- PyTorch (primary), TensorFlow
+- FastAPI, REST APIs, WebSockets, Pydantic
 
 ### Languages
-- Python (primary — 5+ years, production ML + data pipelines)
-- SQL (complex queries, window functions, optimization)
-- TypeScript / JavaScript (full-stack, Next.js applications)
-- R (statistical analysis, visualization)
+- Python (primary — production ML, agentic systems, data pipelines)
+- SQL (complex queries, Text2SQL)
+- R (statistical analysis)
+- TypeScript (full-stack, React/Next.js applications)
 - Bash (scripting, automation)
 
-### Cloud & MLOps
-- Cloud: AWS (S3, EC2, Lambda, SageMaker)
-- Containerization: Docker
-- Version control: Git, GitHub
-- Model serving: FastAPI, REST APIs
-- Experiment tracking: MLflow, Weights & Biases
+### Databases & Cloud
+- PostgreSQL, ChromaDB (Vector DB), PGVector
+- Docker, CI/CD, GitHub Actions
+- Cloud Deployment (HuggingFace Spaces)
 
-### Frontend & Web
-- React, Next.js (App Router)
-- Tailwind CSS, Framer Motion
-- TypeScript
-- Familiar with full product development cycle
+### Data & Visualization
+- Pandas, NumPy, Plotly, Streamlit, yfinance, Jupyter
+
+## Leadership & Startup Experience
+
+- Invited to Stanford University for Silicon Valley Meet-up of University Innovation Fellows (March 2023)
+- Editorial Board Member of Stanford UIF's Change Forward Journal 3rd edition
+- Hosted Design Thinking workshops at multiple universities impacting over 5,000 students
+- Co-Founded Young Web Solutions — a student-led startup providing web development and UI/UX design services
 
 ## About This Portfolio
 
@@ -72,7 +125,7 @@ This portfolio (https://vikranthreddimasu.xyz) is built with Next.js 14, TypeScr
 
 - Interactive Clifford Strange Attractor canvas background (custom canvas animation)
 - Terminal interface (press / to open)
-- AI "Ask Me Anything" chat widget powered by Claude
+- AI "Ask Me Anything" chat widget powered by Grok
 - LLM-readable structured data (you are reading it now)
 - JSON-LD Schema.org structured data in the page head
 
@@ -82,7 +135,10 @@ This portfolio (https://vikranthreddimasu.xyz) is built with Next.js 14, TypeScr
 Yes, currently open to full-time ML Engineer, Data Scientist, and AI Engineer roles.
 
 **What is Vikranth's strongest skill?**
-Deep learning and MLOps — particularly training and deploying PyTorch models, building reinforcement learning systems, and designing end-to-end ML pipelines.
+Building production-grade agentic AI systems — particularly multi-agent architectures with LangGraph, RAG pipelines, and end-to-end ML applications with FastAPI and React.
+
+**What is Vikranth's education?**
+M.S. in Data Science at University of Maryland — College Park (GPA: 3.85, graduating May 2026).
 
 **How can I reach Vikranth?**
 Email: vikranthreddimasu@gmail.com — or connect on LinkedIn at linkedin.com/in/vikranthreddimasu
